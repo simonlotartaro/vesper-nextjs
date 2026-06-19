@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: #06080F;
+  color: #ECE7DB;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: rgba(198,162,88,0.28); color: #fff; }
+
+input, textarea, select, button { font-family: inherit; }
+input::placeholder, textarea::placeholder { color: #56544c; }
+select option { background: #0C0F18; color: #ECE7DB; }
+
+@keyframes vGlow { 0%,100% { opacity: .5; } 50% { opacity: .85; } }
+@keyframes vUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes vIn { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+
+/* Hover / focus states that cannot live in inline styles */
+.v-cta { transition: background .4s ease, transform .4s ease; }
+.v-cta:hover { background: #DcC489; transform: translateY(-1px); }
+
+.v-submit { transition: background .4s ease; }
+.v-submit:hover { background: #DcC489; }
+
+.v-link { transition: color .4s ease; }
+.v-link:hover { color: #C6A258; }
+
+.v-close { transition: border-color .3s, color .3s; }
+.v-close:hover { border-color: #C6A258; color: #C6A258; }
+
+.v-field { transition: border-color .3s; }
+.v-field:focus { border-bottom-color: #C6A258; }
