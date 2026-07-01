@@ -222,25 +222,29 @@ export default function VesperHome() {
 
       {/* ============ MENU OVERLAY ============ */}
       {menuOpen && (
-        <div
-          onClick={() => setMenuOpen(false)}
-          style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(4,5,10,0.97)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", display: "flex", flexDirection: "column", justifyContent: "center", animation: "vUp .4s both" }}
-        >
-          <div onClick={(e) => e.stopPropagation()} style={{ display: "flex", flexDirection: "column", height: "100%", padding: "clamp(60px,10vh,100px) clamp(40px,8vw,120px)" }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 200, display: "flex" }}>
+          {/* left scrim — 2/3 — click to close */}
+          <div
+            onClick={() => setMenuOpen(false)}
+            style={{ flex: "0 0 66.666%", background: "rgba(4,5,10,0.72)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", animation: "vFadeIn .4s both" }}
+          />
+          {/* right panel — 1/3 */}
+          <div style={{ flex: "0 0 33.333%", background: "#0A0C13", borderLeft: "1px solid rgba(198,162,88,0.15)", display: "flex", flexDirection: "column", height: "100%", padding: "clamp(60px,10vh,100px) clamp(28px,4vw,56px) 48px", animation: "menuSlideIn .45s cubic-bezier(.16,1,.3,1) both", overflowY: "auto" }}>
 
             {/* nav links */}
-            <nav style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: "clamp(24px,4vh,40px)" }}>
+            <nav style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: "clamp(18px,3vh,32px)" }}>
               {[
-                { label: "About", action: () => { setMenuOpen(false); setAboutOpen(true); } },
+                { label: "Home",        action: () => { setMenuOpen(false); } },
+                { label: "About",       action: () => { setMenuOpen(false); setAboutOpen(true); } },
                 { label: "Application", action: () => { setMenuOpen(false); setModalOpen(true); setSubmitted(false); } },
-                { label: "Contact", action: () => { setMenuOpen(false); setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } },
-                { label: "Members", action: () => { setMenuOpen(false); setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } },
-              ].map((item, i) => (
+                { label: "Contact",     action: () => { setMenuOpen(false); setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } },
+                { label: "Members",     action: () => { setMenuOpen(false); setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } },
+              ].map((item) => (
                 <a
                   key={item.label}
                   href="#"
                   onClick={(e) => { e.preventDefault(); item.action(); }}
-                  style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(42px,7vw,88px)", color: "#F4EFE4", textDecoration: "none", lineHeight: 1, letterSpacing: "-0.01em", transition: "color .3s ease", animationDelay: `${i * 0.06}s` }}
+                  style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(30px,3.2vw,52px)", color: "#F4EFE4", textDecoration: "none", lineHeight: 1, letterSpacing: "-0.01em", transition: "color .3s ease" }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#C6A258")}
                   onMouseLeave={(e) => (e.currentTarget.style.color = "#F4EFE4")}
                 >
@@ -250,18 +254,16 @@ export default function VesperHome() {
             </nav>
 
             {/* footer contact strip */}
-            <div style={{ borderTop: "1px solid rgba(198,162,88,0.18)", paddingTop: 32, display: "flex", flexWrap: "wrap", gap: "clamp(24px,4vw,60px)", alignItems: "flex-end" }}>
+            <div style={{ borderTop: "1px solid rgba(198,162,88,0.18)", paddingTop: 28, display: "flex", flexDirection: "column", gap: 20 }}>
               <div>
-                <div style={{ fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 8 }}>Contact</div>
-                <a href="mailto:info@vesper.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(14px,1.2vw,18px)", color: "#C6A258", textDecoration: "none", letterSpacing: "0.04em" }}>info@vesper.com</a>
+                <div style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 7 }}>Contact</div>
+                <a href="mailto:info@vesper.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#C6A258", textDecoration: "none", letterSpacing: "0.04em" }}>info@vesper.com</a>
               </div>
               <div>
-                <div style={{ fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 8 }}>Instagram</div>
-                <a href="https://instagram.com/vesper" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(14px,1.2vw,18px)", color: "#9b988e", textDecoration: "none", letterSpacing: "0.04em", transition: "color .3s ease" }} onMouseEnter={(e) => (e.currentTarget.style.color = "#C6A258")} onMouseLeave={(e) => (e.currentTarget.style.color = "#9b988e")}>@Vesper</a>
+                <div style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 7 }}>Instagram</div>
+                <a href="https://instagram.com/vesper" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#9b988e", textDecoration: "none", letterSpacing: "0.04em", transition: "color .3s ease" }} onMouseEnter={(e) => (e.currentTarget.style.color = "#C6A258")} onMouseLeave={(e) => (e.currentTarget.style.color = "#9b988e")}>@Vesper</a>
               </div>
-              <div style={{ marginLeft: "auto" }}>
-                <span style={{ fontSize: 11, letterSpacing: "0.26em", textTransform: "uppercase", color: "#2e2d28" }}>Madrid · 2026</span>
-              </div>
+              <span style={{ fontSize: 10, letterSpacing: "0.26em", textTransform: "uppercase", color: "#2e2d28", marginTop: 4 }}>Madrid · 2026</span>
             </div>
           </div>
         </div>

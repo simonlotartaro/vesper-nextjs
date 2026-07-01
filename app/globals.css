@@ -21,6 +21,8 @@ select option { background: #0C0F18; color: #ECE7DB; }
 @keyframes vGlow { 0%,100% { opacity: .5; } 50% { opacity: .85; } }
 @keyframes vUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes vIn { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes vFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes menuSlideIn { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
 
 /* Hover / focus states that cannot live in inline styles */
 .v-cta { transition: background .4s ease, transform .4s ease; }
