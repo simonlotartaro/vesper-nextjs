@@ -159,12 +159,7 @@ export default function VesperHome() {
           </div>
 
           {/* minimal footer bar */}
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 4, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 34px", pointerEvents: "none" }}>
-            <div style={{ display: "flex", gap: 26, pointerEvents: "auto" }}>
-              <a href="mailto:access@vesper.club" className="v-link" style={{ textDecoration: "none", color: "#6f6c63", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase" }}>Contact</a>
-              <a href="#" className="v-link" style={{ textDecoration: "none", color: "#6f6c63", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase" }}>Instagram</a>
-              <a href="#" className="v-link" style={{ textDecoration: "none", color: "#6f6c63", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase" }}>Legal</a>
-            </div>
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 4, display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "20px 34px", pointerEvents: "none" }}>
             <span style={{ fontSize: 11, letterSpacing: "0.26em", textTransform: "uppercase", color: "#56544c" }}>Madrid · 2026</span>
           </div>
         </div>
