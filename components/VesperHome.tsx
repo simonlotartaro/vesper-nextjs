@@ -71,6 +71,7 @@ export default function VesperHome() {
   const [ready, setReady] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function VesperHome() {
     mq();
     window.addEventListener("resize", mq);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setModalOpen(false);
+      if (e.key === "Escape") { setModalOpen(false); setAboutOpen(false); }
     };
     window.addEventListener("keydown", onKey);
     return () => {
@@ -92,8 +93,8 @@ export default function VesperHome() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = modalOpen ? "hidden" : "";
-  }, [modalOpen]);
+    document.body.style.overflow = (modalOpen || aboutOpen) ? "hidden" : "";
+  }, [modalOpen, aboutOpen]);
 
   const openModal = () => { setModalOpen(true); setSubmitted(false); };
   const closeModal = () => setModalOpen(false);
@@ -134,7 +135,7 @@ export default function VesperHome() {
                   {/* bottom nav button */}
                   <div style={{ position: "absolute", bottom: "9vh", left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, pointerEvents: "auto" }}>
                     <span style={{ width: 1, height: 28, background: "rgba(198,162,88,0.7)" }} />
-                    <a href="#" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{col.nav}</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{col.nav}</a>
                   </div>
                 </div>
               );
@@ -194,7 +195,7 @@ export default function VesperHome() {
                       <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, color: "#F4EFE4" }}>{col.name}</div>
                       <div style={{ marginTop: 6, fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#9b988e", transition: "opacity .6s", opacity: active ? 1 : 0 }}>{col.desc}</div>
                     </div>
-                    <a href="#" onClick={(e) => e.stopPropagation()} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease", flexShrink: 0 }}>{col.nav}</a>
+                    <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease", flexShrink: 0 }}>{col.nav}</a>
                   </div>
                 </div>
               );
@@ -272,6 +273,55 @@ export default function VesperHome() {
                 </form>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ============ ABOUT OVERLAY ============ */}
+      {aboutOpen && (
+        <div
+          onClick={() => setAboutOpen(false)}
+          style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(4,5,10,0.96)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", overflowY: "auto", animation: "vUp .4s both" }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(60px,10vh,120px) clamp(28px,6vw,60px)" }}
+          >
+            {/* close */}
+            <button onClick={() => setAboutOpen(false)} aria-label="Close" className="v-close" style={{ position: "fixed", top: 28, right: 32, width: 34, height: 34, background: "transparent", border: "1px solid rgba(236,231,219,0.18)", color: "#bdb9af", fontSize: 16, cursor: "pointer", lineHeight: 1 }}>×</button>
+
+            {/* eyebrow */}
+            <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 32 }}>About</div>
+
+            {/* headline */}
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(36px,5vw,58px)", color: "#F4EFE4", lineHeight: 1.1, margin: "0 0 48px" }}>
+              Vesper was born from a simple idea.
+            </h1>
+
+            {/* divider */}
+            <span style={{ display: "block", width: 40, height: 1, background: "#C6A258", marginBottom: 48 }} />
+
+            {/* body */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 28, fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(17px,1.6vw,21px)", color: "#bdb9af", lineHeight: 1.75 }}>
+              <p style={{ margin: 0 }}>Around elite athletes, a special circle naturally forms — not only because of what they have achieved in their careers, but because of what they represent: discipline, character, pressure, respect, history and legacy.</p>
+              <p style={{ margin: 0 }}>Today, those circles already exist, but they often appear fragmented, without identity and without continuity. Vesper gives that world meaning and direction.</p>
+
+              {/* negations */}
+              <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 10, fontStyle: "italic", color: "#6f6c63", fontSize: "clamp(15px,1.4vw,18px)" }}>
+                <span>It is not another party.</span>
+                <span>It is not a gathering of famous people.</span>
+                <span>It is not about using important names as decoration.</span>
+              </div>
+
+              <p style={{ margin: 0 }}>Vesper is a private platform built around elite sport, where athletes, their networks, brands, entrepreneurs, sponsors and cultural leaders can meet within a real, curated and thoughtful environment.</p>
+              <p style={{ margin: 0 }}>The elite athlete is the magnet. Everything else is born from the circle that forms around them.</p>
+              <p style={{ margin: 0 }}>Vesper does not seek celebrities. It seeks people with history, character, legitimacy and judgment.</p>
+            </div>
+
+            {/* closing line */}
+            <div style={{ marginTop: 64, fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontWeight: 300, fontSize: "clamp(22px,2.4vw,30px)", color: "#F4EFE4" }}>
+              For those who understand pressure.
+            </div>
           </div>
         </div>
       )}
