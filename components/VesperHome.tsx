@@ -350,7 +350,7 @@ export default function VesperHome() {
 
             {/* headline */}
             <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(36px,5vw,58px)", color: "#F4EFE4", lineHeight: 1.1, margin: "0 0 48px" }}>
-              Vesper was born from a simple idea.
+              Vesper stems from a simple,<br />yet powerful reality.
             </h1>
 
             {/* divider */}
@@ -358,24 +358,42 @@ export default function VesperHome() {
 
             {/* body */}
             <div style={{ display: "flex", flexDirection: "column", gap: 28, fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(17px,1.6vw,21px)", color: "#bdb9af", lineHeight: 1.75 }}>
-              <p style={{ margin: 0 }}>Around elite athletes, a special circle naturally forms — not only because of what they have achieved in their careers, but because of what they represent: discipline, character, pressure, respect, history and legacy.</p>
-              <p style={{ margin: 0 }}>Today, those circles already exist, but they often appear fragmented, without identity and without continuity. Vesper gives that world meaning and direction.</p>
+              <p style={{ margin: 0 }}>A very special, unique ecosystem naturally forms around elite athletes — not only because of their career achievements, but also because of what they represent: discipline, character, resilience under pressure, respect, history, and legacy.</p>
+              <p style={{ margin: 0 }}>The circles that currently form lack continuity and purpose; they only seek to secure the isolated booking of an elite athlete to attract brands, sponsors, etc. For the most part, these events appear in a disorganized manner, without identity, continuity, or depth, driven solely by money.</p>
+              <p style={{ margin: 0 }}>What we want to do with Vesper is organize a meaningful circle — one that maintains continuity and logic, and that naturally develops its own personality and depth. Undoubtedly, this circle will be one of the most powerful in the world, leading to countless opportunities.</p>
 
               {/* negations */}
               <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 10, fontStyle: "italic", color: "#6f6c63", fontSize: "clamp(15px,1.4vw,18px)" }}>
-                <span>It is not another party.</span>
-                <span>It is not a gathering of famous people.</span>
-                <span>It is not about using important names as decoration.</span>
+                <span>We don&apos;t want to create just another party.</span>
+                <span>We don&apos;t want to hold a gathering of celebrities.</span>
+                <span>We don&apos;t want to use big names as decoration.</span>
               </div>
 
-              <p style={{ margin: 0 }}>Vesper is a private platform built around elite sport, where athletes, their networks, brands, entrepreneurs, sponsors and cultural leaders can meet within a real, curated and thoughtful environment.</p>
-              <p style={{ margin: 0 }}>The elite athlete is the magnet. Everything else is born from the circle that forms around them.</p>
-              <p style={{ margin: 0 }}>Vesper does not seek celebrities. It seeks people with history, character, legitimacy and judgment.</p>
+              <p style={{ margin: 0 }}>We want to build a private platform around elite sports, where athletes have a real place, feel comfortable, speak the same language — a space with a sense of belonging, where they can share it with their own network and meet peers from diverse disciplines. This will organically generate the ecosystem we envision.</p>
+              <p style={{ margin: 0 }}>For us, the elite athletes are the magnet, the energy source. Everything else — brands, entrepreneurs, sponsors, hospitality, membership, and various opportunities — is a consequence of the circle that forms around them.</p>
+
+              {/* vision section */}
+              <div style={{ marginTop: 8 }}>
+                <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 24 }}>The Vision</div>
+                <p style={{ margin: "0 0 24px" }}>Vesper is designed to launch in different disciplines around the world — tennis, polo, soccer, golf, Formula 1, regattas, rugby, and beyond. In all cases, we seek official recognition of the discipline, endorsed by the organizers and corresponding entities. We will be there on the right day, at the right place, and at the right time.</p>
+                <p style={{ margin: "0 0 24px" }}>We know that every sport, every country, and every city has its own nuances, its own universe. That&apos;s why every Vesper event is developed independently.</p>
+
+                <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 8, fontStyle: "italic", color: "#6f6c63", fontSize: "clamp(14px,1.3vw,17px)", margin: "4px 0 24px" }}>
+                  <span>Polo has its universe.</span>
+                  <span>Tennis has its universe.</span>
+                  <span>Football has its universe.</span>
+                  <span>Golf has its universe.</span>
+                  <span>Formula 1 has its universe.</span>
+                </div>
+
+                <p style={{ margin: "0 0 24px" }}>Vesper doesn&apos;t seek to impose the same format everywhere. It seeks to understand each sport, respect its codes, and build each vertical from within — hand in hand with real-world figures from that world.</p>
+                <p style={{ margin: 0 }}>We&apos;re not looking for celebrities. We&apos;re looking for people with history, character, legitimacy, and criteria. We want to transcend the known. Vesper is convinced that elite athletes possess this power — because they have already proven it. If we channel all this energy in a certain direction, unimaginable things will be achieved.</p>
+              </div>
             </div>
 
             {/* closing line */}
             <div style={{ marginTop: 64, fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontWeight: 300, fontSize: "clamp(22px,2.4vw,30px)", color: "#F4EFE4" }}>
-              For those who understand pressure.
+              Welcome to Vesper.
             </div>
           </div>
         </div>
