@@ -18,13 +18,14 @@ type Col = {
   desc: string;
   bg: string;
   pos: string;
+  nav: string;
 };
 
 const COLUMNS: Col[] = [
-  { no: "01", name: "Pressure",    desc: "The moment before",       bg: "/assets/col-pressure.png",    pos: "50% 42%" },
-  { no: "02", name: "Access",      desc: "Doors that stay closed",  bg: "/assets/col-access.png",      pos: "55% 45%" },
-  { no: "03", name: "Performance", desc: "Precision at the edge",   bg: "/assets/col-performance.png", pos: "60% 48%" },
-  { no: "04", name: "Culture",     desc: "Where the night belongs", bg: "/assets/col-culture.png",     pos: "50% 55%" },
+  { no: "01", name: "Pressure",    desc: "The moment before",       bg: "/assets/col-pressure.png",    pos: "50% 42%", nav: "About" },
+  { no: "02", name: "Access",      desc: "Doors that stay closed",  bg: "/assets/col-access.png",      pos: "55% 45%", nav: "Application" },
+  { no: "03", name: "Performance", desc: "Precision at the edge",   bg: "/assets/col-performance.png", pos: "60% 48%", nav: "Contact" },
+  { no: "04", name: "Culture",     desc: "Where the night belongs", bg: "/assets/col-culture.png",     pos: "50% 55%", nav: "Members" },
 ];
 
 function backdropStyle(col: Col, active: boolean, anyActive: boolean, isMobile: boolean): React.CSSProperties {
@@ -117,7 +118,7 @@ export default function VesperHome() {
                 <div
                   key={col.no}
                   onMouseEnter={() => setHovered(i)}
-                  style={{ position: "relative", flex: 1, height: "100%", overflow: "hidden", cursor: "default", ...(i === 0 ? {} : { borderLeft: "1px solid rgba(236,231,219,0.06)" }) }}
+                  style={{ position: "relative", flex: 1, height: "100%", overflow: "hidden", cursor: "default", ...(i === 0 ? {} : { borderLeft: "1px solid rgba(198,162,88,0.18)" }) }}
                 >
                   <div style={{ position: "absolute", inset: "-3%", transition: "transform 1.15s cubic-bezier(.16,1,.3,1), filter 1.15s cubic-bezier(.16,1,.3,1)", willChange: "transform, filter", ...backdropStyle(col, active, anyActive, false) }} />
                   <div style={{ position: "absolute", inset: 0, background: "#06080F", transition: "opacity .85s ease", opacity: veilOpacity(active, anyActive, false) }} />
@@ -129,6 +130,11 @@ export default function VesperHome() {
                       <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "clamp(22px,2vw,30px)", color: "#F4EFE4", lineHeight: 1 }}>{col.name}</div>
                       <div style={{ marginTop: 10, fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#9b988e" }}>{col.desc}</div>
                     </div>
+                  </div>
+                  {/* bottom nav button */}
+                  <div style={{ position: "absolute", bottom: "9vh", left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, pointerEvents: "auto" }}>
+                    <span style={{ width: 1, height: 28, background: "rgba(198,162,88,0.35)" }} />
+                    <a href="#" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "rgba(198,162,88,0.95)" : "rgba(198,162,88,0.45)", textDecoration: "none", transition: "color .6s ease" }}>{col.nav}</a>
                   </div>
                 </div>
               );
@@ -179,7 +185,7 @@ export default function VesperHome() {
                 <div
                   key={col.no}
                   onClick={() => setMobileActive(mobileActive === i ? null : i)}
-                  style={{ position: "relative", flex: 1, minHeight: 118, overflow: "hidden", borderTop: "1px solid rgba(236,231,219,0.06)", cursor: "pointer" }}
+                  style={{ position: "relative", flex: 1, minHeight: 118, overflow: "hidden", borderTop: "1px solid rgba(198,162,88,0.18)", cursor: "pointer" }}
                 >
                   <div style={{ position: "absolute", inset: 0, transition: "filter 1s ease, transform 1s ease", ...backdropStyle(col, active, anyActive, true) }} />
                   <div style={{ position: "absolute", inset: 0, background: "#06080F", transition: "opacity .8s ease", opacity: veilOpacity(active, anyActive, true) }} />
@@ -188,6 +194,7 @@ export default function VesperHome() {
                       <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, color: "#F4EFE4" }}>{col.name}</div>
                       <div style={{ marginTop: 6, fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#9b988e", transition: "opacity .6s", opacity: active ? 1 : 0 }}>{col.desc}</div>
                     </div>
+                    <a href="#" onClick={(e) => e.stopPropagation()} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "rgba(198,162,88,0.95)" : "rgba(198,162,88,0.45)", textDecoration: "none", transition: "color .5s ease", flexShrink: 0 }}>{col.nav}</a>
                   </div>
                 </div>
               );
