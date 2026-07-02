@@ -417,10 +417,10 @@ export default function VesperHome() {
             <nav style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: "clamp(18px,3vh,32px)" }}>
               {([
                 { key: "home" as const,        action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setModalOpen(false); setEventOpen(false); setHovered(null); setMobileActive(null); window.scrollTo({ top: 0, behavior: "smooth" }); } },
-                { key: "about" as const,       action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(true); } },
-                { key: "application" as const, action: () => { setMenuOpen(false); setEventOpen(true); } },
-                { key: "contact" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } },
-                { key: "members" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } },
+                { key: "about" as const,       action: () => { setMenuOpen(false); setEventOpen(false); setMembersOpen(false); setContactOpen(false); setAboutOpen(true); } },
+                { key: "application" as const, action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setEventOpen(true); } },
+                { key: "contact" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setMembersOpen(false); setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } },
+                { key: "members" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setContactOpen(false); setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } },
               ]).map((item) => (
                 <a key={item.key} href="#" onClick={(e) => { e.preventDefault(); item.action(); }}
                   style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(30px,3.2vw,52px)", color: "#F4EFE4", textDecoration: "none", lineHeight: 1, letterSpacing: "-0.01em", transition: "color .3s ease" }}
