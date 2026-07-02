@@ -308,7 +308,6 @@ export default function VesperHome() {
           <div onMouseLeave={() => setHovered(null)} style={{ position: "absolute", inset: 0, display: "flex", zIndex: 1 }}>
             {COLUMNS.map((col, i) => {
               const active = sel === i;
-              const colT = t.cols[i];
               return (
                 <div
                   key={col.no}
@@ -462,11 +461,11 @@ export default function VesperHome() {
             <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 32 }}>{t.about.eyebrow}</div>
             <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(36px,5vw,58px)", color: "#F4EFE4", lineHeight: 1.1, margin: "0 0 48px", whiteSpace: "pre-line" }}>{t.about.headline}</h1>
             <span style={{ display: "block", width: 40, height: 1, background: "#C6A258", marginBottom: 48 }} />
-            <div style={{ display: "flex", flexDirection: "column", gap: 28, fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(17px,1.6vw,21px)", color: "#bdb9af", lineHeight: 1.75 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 28, fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(17px,1.6vw,21px)", color: "#d6d2c8", lineHeight: 1.75 }}>
               <p style={{ margin: 0 }}>{t.about.p1}</p>
               <p style={{ margin: 0 }}>{t.about.p2}</p>
               <p style={{ margin: 0 }}>{t.about.p3}</p>
-              <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 10, fontStyle: "italic", color: "#6f6c63", fontSize: "clamp(15px,1.4vw,18px)" }}>
+              <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 10, fontStyle: "italic", color: "#9b988e", fontSize: "clamp(15px,1.4vw,18px)" }}>
                 {t.about.neg.map((n) => <span key={n}>{n}</span>)}
               </div>
               <p style={{ margin: 0 }}>{t.about.p4}</p>
@@ -475,7 +474,7 @@ export default function VesperHome() {
                 <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 24 }}>{t.about.visionLabel}</div>
                 <p style={{ margin: "0 0 24px" }}>{t.about.vp1}</p>
                 <p style={{ margin: "0 0 24px" }}>{t.about.vp2}</p>
-                <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 8, fontStyle: "italic", color: "#6f6c63", fontSize: "clamp(14px,1.3vw,17px)", margin: "4px 0 24px" }}>
+                <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 8, fontStyle: "italic", color: "#9b988e", fontSize: "clamp(14px,1.3vw,17px)", margin: "4px 0 24px" }}>
                   {t.about.vBullets.map((b) => <span key={b}>{b}</span>)}
                 </div>
                 <p style={{ margin: "0 0 24px" }}>{t.about.vp3}</p>
