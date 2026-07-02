@@ -71,6 +71,25 @@ const T = {
       noteLabel: "Short Note", notePlaceholder: "Tell us, briefly.", submitBtn: "Submit Request",
       successTitle: "Request received.", successMsg: "If aligned, we will be in touch.", closeBtn: "Close",
     },
+    event: {
+      title: "Gran Premio Madrid 2026",
+      date: "Sunday, September 13",
+      time: "19:00 to 23:00",
+      desc: "A private Vesper evening at the heart of IFEMA. A reserved space within WAH to enjoy the Grand Prix from a unique perspective — with gastronomy, live music, and an atmosphere designed for those who understand pressure.",
+      includesLabel: "THE EVENING INCLUDES",
+      features: [
+        { name: "BAR",     desc: "Signature cocktails and a premium selection of drinks." },
+        { name: "KITCHEN", desc: "High-level gastronomic proposal." },
+        { name: "LIVE",    desc: "Live music to accompany the night." },
+      ],
+      venue: "IFEMA · WAH",
+      address: "Av. del Partenón, 5\n28042 Madrid",
+      access: "Private access\nWAH Lounge",
+      parking: "Parking\navailable",
+      dresscode: "Dress code\nelegant",
+      inviteOnly: "BY INVITATION ONLY",
+      cta: "REQUEST ACCESS",
+    },
   },
   es: {
     tagline: "Para quienes entienden la presión.",
@@ -127,6 +146,25 @@ const T = {
       interestedOptions: ["Seleccionar", "Madrid GP 2026", "Partnership", "Membresía", "Mesa Privada", "Acceso General"],
       noteLabel: "Nota Breve", notePlaceholder: "Contanos, brevemente.", submitBtn: "Enviar Solicitud",
       successTitle: "Solicitud recibida.", successMsg: "Si hay afinidad, estaremos en contacto.", closeBtn: "Cerrar",
+    },
+    event: {
+      title: "Gran Premio Madrid 2026",
+      date: "Domingo 13 de septiembre",
+      time: "19:00 a 23:00",
+      desc: "Una velada privada de Vesper en el corazón de IFEMA. Un espacio reservado dentro de WAH para disfrutar del Gran Premio desde una perspectiva única, con gastronomía, música en vivo y una atmósfera diseñada para quienes entienden la presión.",
+      includesLabel: "LA VELADA INCLUYE",
+      features: [
+        { name: "BAR",     desc: "Coctelería de autor y una selección de bebidas premium." },
+        { name: "COCINA",  desc: "Propuesta gastronómica de alto nivel." },
+        { name: "EN VIVO", desc: "Música en vivo para acompañar la noche." },
+      ],
+      venue: "IFEMA · WAH",
+      address: "Av. del Partenón, 5\n28042 Madrid",
+      access: "Acceso privado\nWAH Lounge",
+      parking: "Parking\ndisponible",
+      dresscode: "Dress code\nelegante",
+      inviteOnly: "SOLO CON INVITACIÓN",
+      cta: "SOLICITAR ACCESO",
     },
   },
   fr: {
@@ -185,6 +223,25 @@ const T = {
       noteLabel: "Note Brève", notePlaceholder: "Dites-nous, brièvement.", submitBtn: "Soumettre la demande",
       successTitle: "Demande reçue.", successMsg: "Si nous sommes alignés, nous vous contacterons.", closeBtn: "Fermer",
     },
+    event: {
+      title: "Gran Premio Madrid 2026",
+      date: "Dimanche 13 septembre",
+      time: "19h00 à 23h00",
+      desc: "Une soirée privée Vesper au cœur de l'IFEMA. Un espace réservé au sein du WAH pour profiter du Grand Prix sous un angle unique — avec gastronomie, musique live et une atmosphère pensée pour ceux qui comprennent la pression.",
+      includesLabel: "LA SOIRÉE COMPREND",
+      features: [
+        { name: "BAR",     desc: "Cocktails signature et une sélection de boissons premium." },
+        { name: "CUISINE", desc: "Proposition gastronomique de haut niveau." },
+        { name: "LIVE",    desc: "Musique live pour accompagner la nuit." },
+      ],
+      venue: "IFEMA · WAH",
+      address: "Av. del Partenón, 5\n28042 Madrid",
+      access: "Accès privé\nWAH Lounge",
+      parking: "Parking\ndisponible",
+      dresscode: "Code vestimentaire\nélégant",
+      inviteOnly: "SUR INVITATION UNIQUEMENT",
+      cta: "DEMANDER L'ACCÈS",
+    },
   },
 } as const;
 
@@ -221,6 +278,7 @@ export default function VesperHome() {
   const [membersStep, setMembersStep] = useState<"login" | "create" | "done">("login");
   const [membersEmail, setMembersEmail] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [eventOpen, setEventOpen] = useState(false);
   const [lang, setLang] = useState<Lang>("en");
   const cardRef = useRef<HTMLDivElement | null>(null);
 
@@ -231,15 +289,15 @@ export default function VesperHome() {
     mq();
     window.addEventListener("resize", mq);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setModalOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setMenuOpen(false); }
+      if (e.key === "Escape") { setModalOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setMenuOpen(false); setEventOpen(false); }
     };
     window.addEventListener("keydown", onKey);
     return () => { window.removeEventListener("resize", mq); window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = (modalOpen || aboutOpen || contactOpen || membersOpen || menuOpen) ? "hidden" : "";
-  }, [modalOpen, aboutOpen, contactOpen, membersOpen, menuOpen]);
+    document.body.style.overflow = (modalOpen || aboutOpen || contactOpen || membersOpen || menuOpen || eventOpen) ? "hidden" : "";
+  }, [modalOpen, aboutOpen, contactOpen, membersOpen, menuOpen, eventOpen]);
 
   const openModal = () => { setModalOpen(true); setSubmitted(false); };
   const closeModal = () => setModalOpen(false);
@@ -295,7 +353,7 @@ export default function VesperHome() {
                 >
                   <div style={{ position: "absolute", bottom: "9vh", left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, pointerEvents: "auto" }}>
                     <span style={{ width: 28, height: 1, background: "rgba(198,162,88,0.7)" }} />
-                    <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } if (col.nav === "Application") { openModal(); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{t.menu[navKey(col.nav)]}</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{t.menu[navKey(col.nav)]}</a>
                   </div>
                 </div>
               );
@@ -338,7 +396,7 @@ export default function VesperHome() {
                   style={{ position: "relative", flex: 1, minHeight: 118, overflow: "hidden", borderTop: "1px solid rgba(198,162,88,0.18)", cursor: "pointer" }}
                 >
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 26px" }}>
-                    <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } if (col.nav === "Application") { openModal(); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease" }}>{t.menu[navKey(col.nav)]}</a>
+                    <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease" }}>{t.menu[navKey(col.nav)]}</a>
                   </div>
                 </div>
               );
@@ -358,9 +416,9 @@ export default function VesperHome() {
           <div style={{ flex: "0 0 33.333%", background: "#0A0C13", borderLeft: "1px solid rgba(198,162,88,0.15)", display: "flex", flexDirection: "column", height: "100%", padding: "clamp(60px,10vh,100px) clamp(28px,4vw,56px) 48px", animation: "menuSlideIn .45s cubic-bezier(.16,1,.3,1) both", overflowY: "auto" }}>
             <nav style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: "clamp(18px,3vh,32px)" }}>
               {([
-                { key: "home" as const,        action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setModalOpen(false); setHovered(null); setMobileActive(null); window.scrollTo({ top: 0, behavior: "smooth" }); } },
+                { key: "home" as const,        action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setModalOpen(false); setEventOpen(false); setHovered(null); setMobileActive(null); window.scrollTo({ top: 0, behavior: "smooth" }); } },
                 { key: "about" as const,       action: () => { setMenuOpen(false); setAboutOpen(true); } },
-                { key: "application" as const, action: () => { setMenuOpen(false); setModalOpen(true); setSubmitted(false); } },
+                { key: "application" as const, action: () => { setMenuOpen(false); setEventOpen(true); } },
                 { key: "contact" as const,     action: () => { setMenuOpen(false); setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } },
                 { key: "members" as const,     action: () => { setMenuOpen(false); setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } },
               ]).map((item) => (
@@ -499,6 +557,89 @@ export default function VesperHome() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ============ EVENT OVERLAY ============ */}
+      {eventOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 100, background: "#06080F", overflowY: "auto", animation: "vFadeIn .5s both" }}>
+
+          {/* HERO */}
+          <div style={{ position: "relative", minHeight: isMobile ? "52vh" : "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(80px,12vh,140px) clamp(28px,6vw,80px) clamp(60px,8vh,100px)", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/assets/event-hero.png')", backgroundSize: "cover", backgroundPosition: "center 40%", filter: "brightness(0.28) saturate(0.75)", zIndex: 0 }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.5) 0%, rgba(6,8,15,0.05) 45%, rgba(6,8,15,0.88) 100%)", zIndex: 1 }} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/vesper-logo.png" alt="Vesper" style={{ width: "clamp(56px,7vw,82px)", height: "auto", position: "relative", zIndex: 2, marginBottom: "clamp(22px,4vh,38px)", opacity: 0.92 }} />
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "clamp(34px,5.5vw,76px)", color: "#F4EFE4", lineHeight: 1.05, margin: "0 0 clamp(14px,2vh,22px)", position: "relative", zIndex: 2, letterSpacing: "-0.01em" }}>{t.event.title}</h1>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(17px,1.8vw,24px)", color: "#C6A258", margin: "0 0 4px", position: "relative", zIndex: 2 }}>{t.event.date}</p>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(15px,1.5vw,21px)", color: "#C6A258", margin: "0 0 clamp(28px,4vh,44px)", position: "relative", zIndex: 2 }}>{t.event.time}</p>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(15px,1.4vw,19px)", color: "#d6d2c8", lineHeight: 1.82, maxWidth: 660, margin: 0, position: "relative", zIndex: 2 }}>{t.event.desc}</p>
+          </div>
+
+          {/* INCLUDES */}
+          <div style={{ padding: "clamp(48px,7vh,80px) clamp(28px,6vw,80px)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: "clamp(32px,5vh,52px)" }}>
+              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
+              <span style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C6A258", whiteSpace: "nowrap" }}>{t.event.includesLabel}</span>
+              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 2 }}>
+              {(t.event.features as readonly { name: string; desc: string }[]).map((feature, i) => {
+                const imgs = ["/assets/event-bar.png", "/assets/event-kitchen.png", "/assets/event-live.png"];
+                const icons = [
+                  <svg key="b" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.25"><path d="M4 3h12l-5.5 7.5V17"/><path d="M7 17h3"/><circle cx="14.5" cy="5" r="1.8" fill="#C6A258" stroke="none"/></svg>,
+                  <svg key="k" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.25"><path d="M7 3v5a2.5 2.5 0 01-2.5 2.5V17"/><path d="M7 3v14"/><path d="M13 3v14"/><path d="M13 3c2.5 0 4 1.2 4 3.5S15.5 10 13 10"/></svg>,
+                  <svg key="l" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.25"><path d="M8 16V6l9-2v10"/><circle cx="6" cy="16" r="2"/><circle cx="15" cy="14" r="2"/></svg>,
+                ];
+                return (
+                  <div key={i} style={{ position: "relative", minHeight: isMobile ? 160 : 230, overflow: "hidden", border: "1px solid rgba(198,162,88,0.13)" }}>
+                    <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${imgs[i]}')`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.32) saturate(0.65)" }} />
+                    <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.45)" }} />
+                    <div style={{ position: "relative", zIndex: 1, padding: "clamp(22px,3vw,36px)" }}>
+                      <div style={{ width: 44, height: 44, border: "1px solid rgba(198,162,88,0.45)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
+                        {icons[i]}
+                      </div>
+                      <div style={{ fontSize: 10, letterSpacing: "0.36em", textTransform: "uppercase", color: "#C6A258", marginBottom: 10 }}>{feature.name}</div>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(14px,1.3vw,17px)", color: "#bdb9af", lineHeight: 1.65, margin: 0, fontWeight: 300 }}>{feature.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* VENUE */}
+          <div style={{ padding: "0 clamp(28px,6vw,80px) clamp(48px,7vh,80px)", textAlign: "center" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(26px,3.5vw,48px)", color: "#F4EFE4", letterSpacing: "0.1em", margin: "0 0 clamp(24px,4vh,44px)" }}>{t.event.venue}</h2>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "clamp(18px,3vw,50px)", marginBottom: "clamp(32px,5vh,52px)" }}>
+              {([
+                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><path d="M7.5 1C5 1 3 3 3 5.5c0 3.5 4.5 8.5 4.5 8.5S12 9 12 5.5C12 3 10 1 7.5 1z"/><circle cx="7.5" cy="5.5" r="1.5"/></svg>, text: t.event.address },
+                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><rect x="2.5" y="1" width="10" height="13" rx="1"/><line x1="7.5" y1="5" x2="7.5" y2="9"/><line x1="5.5" y1="7" x2="9.5" y2="7"/></svg>, text: t.event.access },
+                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><rect x="1" y="1" width="13" height="13" rx="2"/><path d="M5 4.5h3.5a2 2 0 010 4H5V4.5z"/></svg>, text: t.event.parking },
+                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><path d="M7.5 1.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" fill="currentColor" stroke="none"/><path d="M7.5 4.5v2L2 10.5h11L7.5 6.5"/><line x1="4" y1="10.5" x2="4" y2="14"/><line x1="11" y1="10.5" x2="11" y2="14"/></svg>, text: t.event.dresscode },
+              ] as { svg: React.ReactNode; text: string }[]).map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, textAlign: "left" }}>
+                  <span style={{ color: "#C6A258", opacity: 0.75, marginTop: 2, flexShrink: 0 }}>{item.svg}</span>
+                  <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#9b988e", lineHeight: 1.55, whiteSpace: "pre-line" }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "12px 36px" }}>
+              <span style={{ fontSize: 10, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C6A258" }}>{t.event.inviteOnly}</span>
+            </div>
+          </div>
+
+          {/* BOTTOM CTA */}
+          <div
+            onClick={() => { setEventOpen(false); setModalOpen(true); setSubmitted(false); }}
+            style={{ background: "linear-gradient(90deg,#120e04 0%,#1e1606 50%,#120e04 100%)", borderTop: "1px solid rgba(198,162,88,0.38)", padding: "clamp(20px,3vh,28px) clamp(28px,6vw,80px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 18, cursor: "pointer" }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "linear-gradient(90deg,#1a1405 0%,#2a1e08 50%,#1a1405 100%)")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "linear-gradient(90deg,#120e04 0%,#1e1606 50%,#120e04 100%)")}
+          >
+            <span style={{ fontSize: 11, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C6A258" }}>{t.event.cta}</span>
+            <span style={{ color: "#C6A258", fontSize: 18, lineHeight: 1 }}>→</span>
+          </div>
+
         </div>
       )}
 
