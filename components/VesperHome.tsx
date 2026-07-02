@@ -188,34 +188,14 @@ const T = {
   },
 } as const;
 
-type Col = { no: string; bg: string; pos: string; nav: string };
+type Col = { no: string; nav: string };
 
 const COLUMNS: Col[] = [
-  { no: "01", bg: "/assets/col-pressure.png",    pos: "50% 42%", nav: "About" },
-  { no: "02", bg: "/assets/col-access.png",      pos: "55% 45%", nav: "Application" },
-  { no: "03", bg: "/assets/col-performance.png", pos: "60% 48%", nav: "Contact" },
-  { no: "04", bg: "/assets/col-culture.png",     pos: "50% 55%", nav: "Members" },
+  { no: "01", nav: "About" },
+  { no: "02", nav: "Application" },
+  { no: "03", nav: "Contact" },
+  { no: "04", nav: "Members" },
 ];
-
-function backdropStyle(col: Col, active: boolean, anyActive: boolean, isMobile: boolean): React.CSSProperties {
-  let bright: number, sat: number, scale: number;
-  if (active) { bright = 1.0; sat = 1.0; scale = 1.0; }
-  else if (anyActive) { bright = 0.32; sat = 0.5; scale = isMobile ? 1.0 : 1.06; }
-  else { bright = 0.4; sat = 0.55; scale = isMobile ? 1.0 : 1.04; }
-  return {
-    backgroundImage: `url('${col.bg}')`,
-    backgroundSize: "cover",
-    backgroundPosition: col.pos,
-    filter: `brightness(${bright}) saturate(${sat}) contrast(1.04)`,
-    transform: `scale(${scale})`,
-  };
-}
-
-function veilOpacity(active: boolean, anyActive: boolean, isMobile: boolean): number {
-  if (active) return isMobile ? 0.2 : 0.22;
-  if (anyActive) return isMobile ? 0.9 : 0.97;
-  return isMobile ? 0.86 : 0.96;
-}
 
 const fieldStyle: React.CSSProperties = {
   background: "transparent", border: "none",
@@ -265,7 +245,6 @@ export default function VesperHome() {
   const closeModal = () => setModalOpen(false);
 
   const sel = isMobile ? mobileActive : hovered;
-  const anyActive = sel !== null;
   const isDesktop = ready && !isMobile;
   const showMobile = ready && isMobile;
 
@@ -314,9 +293,6 @@ export default function VesperHome() {
                   onMouseEnter={() => setHovered(i)}
                   style={{ position: "relative", flex: 1, height: "100%", overflow: "hidden", cursor: "default", ...(i === 0 ? {} : { borderLeft: "1px solid rgba(198,162,88,0.18)" }) }}
                 >
-                  <div style={{ position: "absolute", inset: "-3%", transition: "transform 1.15s cubic-bezier(.16,1,.3,1), filter 1.15s cubic-bezier(.16,1,.3,1)", willChange: "transform, filter", ...backdropStyle(col, active, anyActive, false) }} />
-                  <div style={{ position: "absolute", inset: 0, background: "#06080F", transition: "opacity .85s ease", opacity: veilOpacity(active, anyActive, false) }} />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(6,8,15,0.55) 0%,transparent 26%,transparent 70%,rgba(6,8,15,0.7) 100%)", pointerEvents: "none" }} />
                   <div style={{ position: "absolute", bottom: "9vh", left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, pointerEvents: "auto" }}>
                     <span style={{ width: 28, height: 1, background: "rgba(198,162,88,0.7)" }} />
                     <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } if (col.nav === "Application") { openModal(); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{t.menu[navKey(col.nav)]}</a>
@@ -361,8 +337,6 @@ export default function VesperHome() {
                   onClick={() => setMobileActive(mobileActive === i ? null : i)}
                   style={{ position: "relative", flex: 1, minHeight: 118, overflow: "hidden", borderTop: "1px solid rgba(198,162,88,0.18)", cursor: "pointer" }}
                 >
-                  <div style={{ position: "absolute", inset: 0, transition: "filter 1s ease, transform 1s ease", ...backdropStyle(col, active, anyActive, true) }} />
-                  <div style={{ position: "absolute", inset: 0, background: "#06080F", transition: "opacity .8s ease", opacity: veilOpacity(active, anyActive, true) }} />
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 26px" }}>
                     <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersOpen(true); } if (col.nav === "Application") { openModal(); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease" }}>{t.menu[navKey(col.nav)]}</a>
                   </div>
