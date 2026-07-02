@@ -72,7 +72,7 @@ const T = {
       successTitle: "Request received.", successMsg: "If aligned, we will be in touch.", closeBtn: "Close",
     },
     event: {
-      title: "Gran Premio Madrid 2026",
+      title: "Madrid Grand Prix 2026",
       date: "Sunday, September 13",
       time: "19:00 to 23:00",
       desc: "A private Vesper evening at the heart of IFEMA. A reserved space within WAH to enjoy the Grand Prix from a unique perspective — with gastronomy, live music, and an atmosphere designed for those who understand pressure.",
@@ -224,7 +224,7 @@ const T = {
       successTitle: "Demande reçue.", successMsg: "Si nous sommes alignés, nous vous contacterons.", closeBtn: "Fermer",
     },
     event: {
-      title: "Gran Premio Madrid 2026",
+      title: "Grand Prix de Madrid 2026",
       date: "Dimanche 13 septembre",
       time: "19h00 à 23h00",
       desc: "Une soirée privée Vesper au cœur de l'IFEMA. Un espace réservé au sein du WAH pour profiter du Grand Prix sous un angle unique — avec gastronomie, musique live et une atmosphère pensée pour ceux qui comprennent la pression.",
@@ -587,9 +587,9 @@ export default function VesperHome() {
               {(t.event.features as readonly { name: string; desc: string }[]).map((feature, i) => {
                 const imgs = ["/assets/event-bar.png", "/assets/event-kitchen.png", "/assets/event-live.png"];
                 const icons = [
-                  <svg key="b" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.25"><path d="M4 3h12l-5.5 7.5V17"/><path d="M7 17h3"/><circle cx="14.5" cy="5" r="1.8" fill="#C6A258" stroke="none"/></svg>,
-                  <svg key="k" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.25"><path d="M7 3v5a2.5 2.5 0 01-2.5 2.5V17"/><path d="M7 3v14"/><path d="M13 3v14"/><path d="M13 3c2.5 0 4 1.2 4 3.5S15.5 10 13 10"/></svg>,
-                  <svg key="l" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.25"><path d="M8 16V6l9-2v10"/><circle cx="6" cy="16" r="2"/><circle cx="15" cy="14" r="2"/></svg>,
+                  <svg key="b" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M3 4L10 12L17 4h-14M10 12v4M7 16h6"/></svg>,
+                  <svg key="k" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M7 3v14M5 3v4a2 2 0 004 0V3"/><path d="M13 3v14M13 3c3 0 4 1.5 4 3s-1 2.5-4 2.5"/></svg>,
+                  <svg key="l" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M8 15V6l9-2v9"/><circle cx="6" cy="15" r="2" fill="#C6A258" stroke="none"/><circle cx="15" cy="13" r="2" fill="#C6A258" stroke="none"/></svg>,
                 ];
                 return (
                   <div key={i} style={{ position: "relative", minHeight: isMobile ? 160 : 230, overflow: "hidden", border: "1px solid rgba(198,162,88,0.13)" }}>
@@ -614,8 +614,8 @@ export default function VesperHome() {
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "clamp(18px,3vw,50px)", marginBottom: "clamp(32px,5vh,52px)" }}>
               {([
                 { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><path d="M7.5 1C5 1 3 3 3 5.5c0 3.5 4.5 8.5 4.5 8.5S12 9 12 5.5C12 3 10 1 7.5 1z"/><circle cx="7.5" cy="5.5" r="1.5"/></svg>, text: t.event.address },
-                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><rect x="2.5" y="1" width="10" height="13" rx="1"/><line x1="7.5" y1="5" x2="7.5" y2="9"/><line x1="5.5" y1="7" x2="9.5" y2="7"/></svg>, text: t.event.access },
-                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><rect x="1" y="1" width="13" height="13" rx="2"/><path d="M5 4.5h3.5a2 2 0 010 4H5V4.5z"/></svg>, text: t.event.parking },
+                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><circle cx="5.5" cy="7.5" r="3"/><path d="M8.5 7.5h5M11.5 5.5v4"/></svg>, text: t.event.access },
+                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><rect x="1.5" y="1.5" width="12" height="12" rx="1.5"/><path d="M5 10.5V4.5h3.5a2 2 0 010 4H5"/></svg>, text: t.event.parking },
                 { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><path d="M7.5 1.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" fill="currentColor" stroke="none"/><path d="M7.5 4.5v2L2 10.5h11L7.5 6.5"/><line x1="4" y1="10.5" x2="4" y2="14"/><line x1="11" y1="10.5" x2="11" y2="14"/></svg>, text: t.event.dresscode },
               ] as { svg: React.ReactNode; text: string }[]).map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, textAlign: "left" }}>
