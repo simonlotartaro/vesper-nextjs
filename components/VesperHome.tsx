@@ -624,8 +624,14 @@ export default function VesperHome() {
                 </div>
               ))}
             </div>
-            <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "12px 36px" }}>
+            <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "12px 36px", marginBottom: "clamp(36px,5vh,64px)" }}>
               <span style={{ fontSize: 10, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C6A258" }}>{t.event.inviteOnly}</span>
+            </div>
+
+            {/* MAP */}
+            <div style={{ width: "100%", maxWidth: 860, margin: "0 auto", border: "1px solid rgba(198,162,88,0.18)", overflow: "hidden" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/assets/wah.png" alt="WAH Madrid — IFEMA Hall 2" style={{ width: "100%", display: "block", opacity: 0.88 }} />
             </div>
           </div>
 
