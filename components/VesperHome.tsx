@@ -566,8 +566,9 @@ export default function VesperHome() {
 
           {/* HERO */}
           <div style={{ position: "relative", minHeight: isMobile ? "52vh" : "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(80px,12vh,140px) clamp(28px,6vw,80px) clamp(60px,8vh,100px)", overflow: "hidden" }}>
-            <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/assets/event-hero.png')", backgroundSize: "cover", backgroundPosition: "center 40%", filter: "brightness(0.28) saturate(0.75)", zIndex: 0 }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.5) 0%, rgba(6,8,15,0.05) 45%, rgba(6,8,15,0.88) 100%)", zIndex: 1 }} />
+            <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/assets/wah-venue.png')", backgroundSize: "cover", backgroundPosition: "center center", zIndex: 0 }} />
+            <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.72)", zIndex: 1 }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.45) 0%, rgba(6,8,15,0.1) 40%, rgba(6,8,15,0.82) 100%)", zIndex: 1 }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/vesper-logo.png" alt="Vesper" style={{ width: "clamp(56px,7vw,82px)", height: "auto", position: "relative", zIndex: 2, marginBottom: "clamp(22px,4vh,38px)", opacity: 0.92 }} />
             <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "clamp(34px,5.5vw,76px)", color: "#F4EFE4", lineHeight: 1.05, margin: "0 0 clamp(14px,2vh,22px)", position: "relative", zIndex: 2, letterSpacing: "-0.01em" }}>{t.event.title}</h1>
