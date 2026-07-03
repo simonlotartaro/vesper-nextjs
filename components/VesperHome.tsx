@@ -75,7 +75,7 @@ const T = {
       title: "Madrid Grand Prix 2026",
       date: "Sunday, September 13",
       time: "19:00 to 23:00",
-      desc: "A Vesper evening at the heart of IFEMA.\nA private gathering during the Madrid Grand Prix 2026, created to bring together a selected circle in a curated, elegant and reserved setting.",
+      desc: "A Vesper evening at the heart of IFEMA.\nA private gathering on the closing night of the Madrid Grand Prix 2026, conceived to bring together a selected circle under the Vesper universe.",
       includesLabel: "THE EVENING INCLUDES",
       features: [
         { name: "BAR",     desc: "Signature cocktails and a premium selection of drinks." },
@@ -151,7 +151,7 @@ const T = {
       title: "Gran Premio Madrid 2026",
       date: "Domingo 13 de septiembre",
       time: "19:00 a 23:00",
-      desc: "Una velada de Vesper en el corazón de IFEMA.\nUn encuentro privado durante el Gran Premio Madrid 2026, creado para reunir a un círculo seleccionado en un entorno cuidado, elegante y reservado.",
+      desc: "Una velada de Vesper en el corazón de IFEMA.\nUn encuentro privado en la noche de cierre del Gran Premio Madrid 2026, pensado para reunir a un círculo seleccionado bajo el universo Vesper.",
       includesLabel: "LA VELADA INCLUYE",
       features: [
         { name: "BAR",     desc: "Coctelería de autor y una selección de bebidas premium." },
@@ -227,7 +227,7 @@ const T = {
       title: "Grand Prix de Madrid 2026",
       date: "Dimanche 13 septembre",
       time: "19h00 à 23h00",
-      desc: "Une soirée Vesper au cœur de l'IFEMA.\nUne rencontre privée lors du Grand Prix de Madrid 2026, créée pour réunir un cercle sélectionné dans un cadre soigné, élégant et réservé.",
+      desc: "Une soirée Vesper au cœur de l'IFEMA.\nUne rencontre privée lors de la nuit de clôture du Grand Prix de Madrid 2026, pensée pour réunir un cercle sélectionné sous l'univers Vesper.",
       includesLabel: "LA SOIRÉE COMPREND",
       features: [
         { name: "BAR",     desc: "Cocktails signature et une sélection de boissons premium." },
