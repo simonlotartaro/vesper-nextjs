@@ -586,7 +586,7 @@ export default function VesperHome() {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 2 }}>
               {(t.event.features as readonly { name: string; desc: string }[]).map((feature, i) => {
-                const imgs = ["/assets/event-bar.png", "/assets/event-kitchen.png", "/assets/event-live.png"];
+                const imgs = ["/assets/Drinks.png", "/assets/Comida.png", "/assets/Music.png"];
                 const icons = [
                   <svg key="b" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M3 4L10 12L17 4h-14M10 12v4M7 16h6"/></svg>,
                   <svg key="k" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M7 3v14M5 3v4a2 2 0 004 0V3"/><path d="M13 3v14M13 3c3 0 4 1.5 4 3s-1 2.5-4 2.5"/></svg>,
@@ -594,8 +594,8 @@ export default function VesperHome() {
                 ];
                 return (
                   <div key={i} style={{ position: "relative", minHeight: isMobile ? 160 : 230, overflow: "hidden", border: "1px solid rgba(198,162,88,0.13)" }}>
-                    <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${imgs[i]}')`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.32) saturate(0.65)" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.45)" }} />
+                    <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${imgs[i]}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                    <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.65)" }} />
                     <div style={{ position: "relative", zIndex: 1, padding: "clamp(22px,3vw,36px)" }}>
                       <div style={{ width: 44, height: 44, border: "1px solid rgba(198,162,88,0.45)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
                         {icons[i]}
