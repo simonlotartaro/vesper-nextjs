@@ -313,7 +313,7 @@ export default function VesperHome() {
 
       {/* ============ LANGUAGE PICKER ============ */}
       {ready && (
-        <div style={{ position: "fixed", top: 42, left: 28, zIndex: 300, display: "flex", gap: 14, alignItems: "center" }}>
+        <div style={{ position: "fixed", top: 42, right: 90, zIndex: 300, display: "flex", gap: 14, alignItems: "center" }}>
           {(["en", "es", "fr"] as Lang[]).map((l) => (
             <button
               key={l}
@@ -489,6 +489,9 @@ export default function VesperHome() {
       {/* ============ ABOUT OVERLAY ============ */}
       {aboutOpen && (
         <div onClick={() => setAboutOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(4,5,10,0.96)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", overflowY: "auto", animation: "vUp .4s both" }}>
+          <button onClick={() => setAboutOpen(false)} className="v-close" style={{ position: "fixed", top: 28, left: 28, zIndex: 150, background: "transparent", border: "1px solid rgba(198,162,88,0.4)", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
+          </button>
           <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(60px,10vh,120px) clamp(28px,6vw,60px)" }}>
             <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 32 }}>{t.about.eyebrow}</div>
             <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(36px,5vw,58px)", color: "#F4EFE4", lineHeight: 1.1, margin: "0 0 48px", whiteSpace: "pre-line" }}>{t.about.headline}</h1>
@@ -521,6 +524,9 @@ export default function VesperHome() {
       {/* ============ CONTACT OVERLAY ============ */}
       {contactOpen && (
         <div onClick={() => setContactOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(4,5,10,0.97)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", overflowY: "auto", animation: "vUp .4s both" }}>
+          <button onClick={() => setContactOpen(false)} className="v-close" style={{ position: "fixed", top: 28, left: 28, zIndex: 150, background: "transparent", border: "1px solid rgba(198,162,88,0.4)", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
+          </button>
           <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 960, margin: "0 auto", padding: "clamp(60px,10vh,100px) clamp(28px,6vw,60px)", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "clamp(40px,6vw,100px)", alignItems: "start" }}>
             <div>
               <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 32 }}>{t.contact.eyebrow}</div>
@@ -563,6 +569,9 @@ export default function VesperHome() {
       {/* ============ EVENT OVERLAY ============ */}
       {eventOpen && (
         <div style={{ position: "fixed", inset: 0, zIndex: 100, background: "#06080F", overflowY: "auto", animation: "vFadeIn .5s both" }}>
+          <button onClick={() => setEventOpen(false)} className="v-close" style={{ position: "fixed", top: 28, left: 28, zIndex: 150, background: "transparent", border: "1px solid rgba(198,162,88,0.4)", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
+          </button>
 
           {/* HERO */}
           <div style={{ position: "relative", minHeight: isMobile ? "52vh" : "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(80px,12vh,140px) clamp(28px,6vw,80px) clamp(60px,8vh,100px)", overflow: "hidden" }}>
@@ -653,6 +662,9 @@ export default function VesperHome() {
       {/* ============ MEMBERS OVERLAY ============ */}
       {membersOpen && (
         <div onClick={() => setMembersOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(4,5,10,0.97)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px", animation: "vUp .4s both" }}>
+          <button onClick={(e) => { e.stopPropagation(); setMembersOpen(false); }} className="v-close" style={{ position: "fixed", top: 28, left: 28, zIndex: 150, background: "transparent", border: "1px solid rgba(198,162,88,0.4)", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
+          </button>
           <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", width: "100%", maxWidth: 420, background: "#0B0E16", border: "1px solid rgba(198,162,88,0.22)", boxShadow: "0 40px 120px rgba(0,0,0,0.7)", padding: "clamp(36px,5vw,52px)", animation: "vIn .55s cubic-bezier(.16,1,.3,1) both" }}>
             <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 24 }}>{t.members.eyebrow}</div>
             {membersStep === "login" && (
