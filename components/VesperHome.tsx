@@ -434,7 +434,7 @@ export default function VesperHome() {
             <div style={{ borderTop: "1px solid rgba(198,162,88,0.18)", paddingTop: 28, display: "flex", flexDirection: "column", gap: 20 }}>
               <div>
                 <div style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 7 }}>Contact</div>
-                <a href="mailto:info@vesper.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#C6A258", textDecoration: "none", letterSpacing: "0.04em" }}>info@vesper.com</a>
+                <a href="mailto:info@vesperevent.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#C6A258", textDecoration: "none", letterSpacing: "0.04em" }}>info@vesperevent.com</a>
               </div>
               <div>
                 <div style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 7 }}>Instagram</div>
@@ -538,11 +538,11 @@ export default function VesperHome() {
                   <button onClick={() => setContactOpen(false)} className="v-close" style={{ marginTop: 32, background: "transparent", border: "1px solid rgba(236,231,219,0.2)", color: "#ECE7DB", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", padding: "13px 30px", cursor: "pointer" }}>{t.contact.closeBtn}</button>
                 </div>
               ) : (
-                <form onSubmit={(e) => { e.preventDefault(); if (!robotChecked) return; setContactSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 24, paddingTop: 8 }}>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.nameLabel}</span><input required type="text" placeholder={t.contact.namePlaceholder} className="v-field" style={fieldStyle} /></label>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.emailLabel}</span><input required type="email" placeholder={t.contact.emailPlaceholder} className="v-field" style={fieldStyle} /></label>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.telLabel}</span><input type="tel" placeholder={t.contact.telPlaceholder} className="v-field" style={fieldStyle} /></label>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.msgLabel}</span><textarea required rows={4} placeholder={t.contact.msgPlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
+                <form onSubmit={async (e) => { e.preventDefault(); if (!robotChecked) return; const f = e.currentTarget; const name = (f.elements.namedItem("name") as HTMLInputElement).value; const email = (f.elements.namedItem("email") as HTMLInputElement).value; const tel = (f.elements.namedItem("tel") as HTMLInputElement).value; const message = (f.elements.namedItem("message") as HTMLTextAreaElement).value; await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, tel, message }) }); setContactSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 24, paddingTop: 8 }}>
+                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.nameLabel}</span><input required name="name" type="text" placeholder={t.contact.namePlaceholder} className="v-field" style={fieldStyle} /></label>
+                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.emailLabel}</span><input required name="email" type="email" placeholder={t.contact.emailPlaceholder} className="v-field" style={fieldStyle} /></label>
+                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.telLabel}</span><input name="tel" type="tel" placeholder={t.contact.telPlaceholder} className="v-field" style={fieldStyle} /></label>
+                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.msgLabel}</span><textarea required name="message" rows={4} placeholder={t.contact.msgPlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
                   <div style={{ display: "flex", alignItems: "center", gap: 14, border: "1px solid rgba(236,231,219,0.12)", padding: "14px 18px", background: "rgba(255,255,255,0.02)" }}>
                     <div onClick={() => setRobotChecked(!robotChecked)} style={{ width: 22, height: 22, border: `2px solid ${robotChecked ? "#C6A258" : "rgba(236,231,219,0.3)"}`, background: robotChecked ? "rgba(198,162,88,0.15)" : "transparent", cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", transition: "all .25s ease" }}>
                       {robotChecked && <span style={{ color: "#C6A258", fontSize: 13, lineHeight: 1 }}>✓</span>}
