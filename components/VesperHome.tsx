@@ -534,7 +534,7 @@ export default function VesperHome() {
               <span style={{ display: "block", width: 40, height: 1, background: "#C6A258", marginBottom: 36 }} />
               <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(16px,1.4vw,19px)", color: "#9b988e", lineHeight: 1.75, margin: "0 0 40px" }}>{t.contact.desc}</p>
               <div style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: "#56544c", marginBottom: 10 }}>{t.contact.emailLabel}</div>
-              <a href="mailto:info@vesper.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(16px,1.4vw,20px)", color: "#C6A258", textDecoration: "none", letterSpacing: "0.04em" }}>info@vesper.com</a>
+              <a href="mailto:info@vesperevent.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(16px,1.4vw,20px)", color: "#C6A258", textDecoration: "none", letterSpacing: "0.04em" }}>info@vesperevent.com</a>
             </div>
             <div>
               {contactSubmitted ? (
