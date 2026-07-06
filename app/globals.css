@@ -26,10 +26,10 @@ select option { background: #0C0F18; color: #ECE7DB; }
 
 /* Hover / focus states that cannot live in inline styles */
 .v-cta { transition: background .4s ease, transform .4s ease; }
-.v-cta:hover { background: #DcC489; transform: translateY(-1px); }
+.v-cta:hover { background: #DEBB78; transform: translateY(-1px); }
 
 .v-submit { transition: background .4s ease; }
-.v-submit:hover { background: #DcC489; }
+.v-submit:hover { background: #DEBB78; }
 
 .v-link { transition: color .4s ease; }
 .v-link:hover { color: #C6A258; }

@@ -398,7 +398,7 @@ export default function VesperHome() {
             <img src="/assets/vesper-logo.png" alt="Vesper" style={{ width: 128, height: "auto", filter: "drop-shadow(0 10px 30px rgba(0,0,0,0.6))" }} />
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontWeight: 300, fontSize: 22, color: "#F4EFE4", margin: "22px 0 0" }}>{t.tagline}</p>
             <p style={{ fontSize: 13, color: "#9b988e", fontWeight: 300, margin: "12px 0 0", maxWidth: 300, lineHeight: 1.6 }}>{t.mobileDesc}</p>
-            <button onClick={openModal} style={{ marginTop: 28, color: "#06080F", background: "#C6A258", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "15px 36px", fontWeight: 600 }}>{t.mobileBtn}</button>
+            <button onClick={openModal} style={{ marginTop: 28, color: "#06080F", background: "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "15px 36px", fontWeight: 600 }}>{t.mobileBtn}</button>
             <div style={{ marginTop: 20, fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c" }}>{t.mobileInvite}</div>
           </div>
 
@@ -490,7 +490,7 @@ export default function VesperHome() {
                     </label>
                   </div>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.noteLabel}</span><textarea rows={3} placeholder={t.application.notePlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
-                  <button type="submit" className="v-submit" style={{ marginTop: 8, color: "#06080F", background: "#C6A258", border: "none", fontSize: 12, letterSpacing: "0.2em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: "pointer" }}>{t.application.submitBtn}</button>
+                  <button type="submit" className="v-submit" style={{ marginTop: 8, color: "#06080F", background: "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.2em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: "pointer" }}>{t.application.submitBtn}</button>
                 </form>
               </div>
             )}
@@ -570,7 +570,7 @@ export default function VesperHome() {
                       <div style={{ fontSize: 9, letterSpacing: "0.1em", color: "#3a3830", textTransform: "uppercase", lineHeight: 1.4 }}>reCAPTCHA<br />Privacy · Terms</div>
                     </div>
                   </div>
-                  <button type="submit" className="v-submit" style={{ marginTop: 4, color: "#06080F", background: robotChecked ? "#C6A258" : "rgba(198,162,88,0.3)", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: robotChecked ? "pointer" : "not-allowed", transition: "background .3s ease" }}>{t.contact.submitBtn}</button>
+                  <button type="submit" className="v-submit" style={{ marginTop: 4, color: "#06080F", background: robotChecked ? "#D0AB60" : "rgba(208,171,96,0.3)", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: robotChecked ? "pointer" : "not-allowed", transition: "background .3s ease" }}>{t.contact.submitBtn}</button>
                 </form>
               )}
             </div>
@@ -685,7 +685,7 @@ export default function VesperHome() {
                 <p style={{ fontSize: 13, color: "#9b988e", fontWeight: 300, margin: "0 0 36px", lineHeight: 1.6 }}>{t.members.loginDesc}</p>
                 <form onSubmit={(e) => { e.preventDefault(); setMembersStep("create"); }} style={{ display: "flex", flexDirection: "column", gap: 22 }}>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.members.emailLabel}</span><input required type="email" placeholder="you@email.com" className="v-field" style={fieldStyle} value={membersEmail} onChange={(e) => setMembersEmail(e.target.value)} /></label>
-                  <button type="submit" className="v-submit" style={{ marginTop: 4, color: "#06080F", background: "#C6A258", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: "pointer" }}>{t.members.continueBtn}</button>
+                  <button type="submit" className="v-submit" style={{ marginTop: 4, color: "#06080F", background: "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: "pointer" }}>{t.members.continueBtn}</button>
                 </form>
               </>
             )}
@@ -696,7 +696,7 @@ export default function VesperHome() {
                 <form onSubmit={(e) => { e.preventDefault(); const form = e.currentTarget; const pw = (form.elements.namedItem("pw") as HTMLInputElement).value; const confirm = (form.elements.namedItem("confirm") as HTMLInputElement).value; if (pw !== confirm) { alert(t.members.pwMismatch); return; } setMembersStep("done"); }} style={{ display: "flex", flexDirection: "column", gap: 22 }}>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.members.pwLabel}</span><input required name="pw" type="password" placeholder="••••••••" className="v-field" style={fieldStyle} minLength={8} /></label>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.members.confirmLabel}</span><input required name="confirm" type="password" placeholder="••••••••" className="v-field" style={fieldStyle} minLength={8} /></label>
-                  <button type="submit" className="v-submit" style={{ marginTop: 4, color: "#06080F", background: "#C6A258", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: "pointer" }}>{t.members.setPwBtn}</button>
+                  <button type="submit" className="v-submit" style={{ marginTop: 4, color: "#06080F", background: "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: "pointer" }}>{t.members.setPwBtn}</button>
                 </form>
               </>
             )}
