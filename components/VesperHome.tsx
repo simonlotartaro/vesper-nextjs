@@ -299,6 +299,25 @@ export default function VesperHome() {
     document.body.style.overflow = (modalOpen || aboutOpen || contactOpen || membersOpen || menuOpen || eventOpen) ? "hidden" : "";
   }, [modalOpen, aboutOpen, contactOpen, membersOpen, menuOpen, eventOpen]);
 
+  // Push a history entry when any overlay opens so browser back closes it instead of leaving the page
+  useEffect(() => {
+    if (aboutOpen || contactOpen || eventOpen || membersOpen) {
+      window.history.pushState({ vesperOverlay: true }, "");
+    }
+  }, [aboutOpen, contactOpen, eventOpen, membersOpen]);
+
+  useEffect(() => {
+    const handlePop = () => {
+      setAboutOpen(false);
+      setContactOpen(false);
+      setEventOpen(false);
+      setMembersOpen(false);
+      setMenuOpen(false);
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, []);
+
   const openModal = () => { setModalOpen(true); setSubmitted(false); };
   const closeModal = () => setModalOpen(false);
 
