@@ -387,9 +387,6 @@ export default function VesperHome() {
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontWeight: 300, fontSize: "clamp(20px,2.4vw,30px)", color: "#F4EFE4", margin: "30px 0 0", animation: "vUp 1.3s .12s both" }}>{t.tagline}</p>
           </div>
 
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 4, display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "20px 34px", pointerEvents: "none" }}>
-            <span style={{ fontSize: 11, letterSpacing: "0.26em", textTransform: "uppercase", color: "#56544c" }}>Madrid · 2026</span>
-          </div>
         </div>
       )}
 
@@ -422,9 +419,6 @@ export default function VesperHome() {
             })}
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "22px 28px", borderTop: "1px solid rgba(236,231,219,0.06)" }}>
-            <span style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#56544c" }}>Madrid · 2026</span>
-          </div>
         </div>
       )}
 
@@ -459,7 +453,6 @@ export default function VesperHome() {
                 <div style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 7 }}>Instagram</div>
                 <a href="https://instagram.com/vesper" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#9b988e", textDecoration: "none", letterSpacing: "0.04em", transition: "color .3s ease" }} onMouseEnter={(e) => (e.currentTarget.style.color = "#C6A258")} onMouseLeave={(e) => (e.currentTarget.style.color = "#9b988e")}>@Vesper</a>
               </div>
-              <span style={{ fontSize: 10, letterSpacing: "0.26em", textTransform: "uppercase", color: "#2e2d28", marginTop: 4 }}>Madrid · 2026</span>
             </div>
           </div>
         </div>
