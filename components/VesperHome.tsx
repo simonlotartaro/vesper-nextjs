@@ -614,9 +614,9 @@ export default function VesperHome() {
                   <svg key="l" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M8 15V6l9-2v9"/><circle cx="6" cy="15" r="2" fill="#C6A258" stroke="none"/><circle cx="15" cy="13" r="2" fill="#C6A258" stroke="none"/></svg>,
                 ];
                 return (
-                  <div key={i} style={{ position: "relative", minHeight: isMobile ? 160 : 230, overflow: "hidden", border: "1px solid rgba(198,162,88,0.13)" }}>
-                    <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${imgs[i]}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.65)" }} />
+                  <div key={i} style={{ position: "relative", minHeight: isMobile ? 200 : 280, overflow: "hidden", border: "1px solid rgba(198,162,88,0.13)" }}>
+                    <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${imgs[i]}')`, backgroundSize: "cover", backgroundPosition: "center", filter: "saturate(1.25) contrast(1.1) brightness(0.9)" }} />
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.18) 0%, rgba(6,8,15,0.1) 35%, rgba(6,8,15,0.72) 100%)" }} />
                     <div style={{ position: "relative", zIndex: 1, padding: "clamp(22px,3vw,36px)" }}>
                       <div style={{ width: 44, height: 44, border: "1px solid rgba(198,162,88,0.45)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
                         {icons[i]}
