@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 const fieldStyle: React.CSSProperties = {
   background: "transparent",
@@ -33,43 +32,36 @@ export default function MembersLoginForm() {
     setLoading(true);
     setError("");
 
-    const supabase = createClient();
-
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const res = await fetch("/api/members/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+        }),
       });
 
-      if (signInError) {
+      if (res.status === 401) {
         setError("Invalid email or password.");
         return;
       }
 
-      // Email is read from the active session server-side — not sent in body
-      const approvalRes = await fetch("/api/members/check-approval", {
-        method: "POST",
-      });
-
-      if (approvalRes.status === 500) {
-        await supabase.auth.signOut();
-        setError("Unable to verify membership. Please try again.");
+      if (res.status === 403) {
+        setError("Access reserved. Membership is by invitation only.");
         return;
       }
 
-      const { approved } = await approvalRes.json();
-
-      if (!approved) {
-        await supabase.auth.signOut();
-        setError("Access reserved. Membership is by invitation only.");
+      if (!res.ok) {
+        setError("Unable to access the members area. Please try again.");
         return;
       }
 
       window.location.assign("/members");
     } catch (err) {
       console.error("[MembersLoginForm] Unexpected error:", err);
-      await supabase.auth.signOut();
-      setError("Something went wrong. Please try again.");
+      setError("Unable to access the members area. Please try again.");
     } finally {
       setLoading(false);
     }

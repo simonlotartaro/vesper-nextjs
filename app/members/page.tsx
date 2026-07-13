@@ -12,13 +12,13 @@ export default async function MembersPage() {
     console.error("[Members] Missing Supabase environment variables.");
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
-    console.log("[Members] No session found — redirecting to /members-access.");
+  if (!user) {
+    console.log("[Members] No authenticated user — redirecting to /members-access.");
     redirect("/members-access");
   }
 
@@ -26,8 +26,8 @@ export default async function MembersPage() {
   const { data: member, error: memberError } = await admin
     .from("members")
     .select("status, name, city, created_at")
-    .eq("email", session.user.email!)
-    .single();
+    .eq("email", user.email!.toLowerCase().trim())
+    .maybeSingle();
 
   if (memberError) {
     console.error("[Members] Error fetching member record:", memberError.message);
@@ -35,13 +35,13 @@ export default async function MembersPage() {
 
   if (member?.status !== "approved") {
     console.warn(
-      `[Members] User ${session.user.email} is not approved (status: ${member?.status ?? "not found"}) — signing out.`
+      `[Members] User ${user.email} is not approved (status: ${member?.status ?? "not found"}) — signing out.`
     );
     await supabase.auth.signOut();
     redirect("/members-access");
   }
 
-  const memberName = member?.name || session.user.email;
+  const memberName = member?.name || user.email;
   const memberCity = member?.city || null;
   const memberSince = member?.created_at
     ? new Date(member.created_at).toLocaleDateString("en-GB", {
@@ -297,7 +297,7 @@ export default async function MembersPage() {
 
             {[
               { label: "Name", value: memberName },
-              { label: "Email", value: session.user.email },
+              { label: "Email", value: user.email },
               ...(memberCity ? [{ label: "City", value: memberCity }] : []),
               ...(memberSince ? [{ label: "Member since", value: memberSince }] : []),
             ].map((row, i) => (
