@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 const fieldStyle: React.CSSProperties = {
   background: "transparent",
@@ -22,13 +23,10 @@ const fieldLabel: React.CSSProperties = {
   color: "#9b988e",
 };
 
-type Step = "login" | "create";
-
 export default function MembersLoginForm() {
-  const [step, setStep] = useState<Step>("login");
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPw, setConfirmPw] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +35,20 @@ export default function MembersLoginForm() {
     setLoading(true);
     setError("");
 
+    const supabase = createClient();
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError("Invalid email or password.");
+      setLoading(false);
+      return;
+    }
+
+    // Verify approval server-side before redirecting
     const approvalRes = await fetch("/api/members/check-approval", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -45,77 +57,15 @@ export default function MembersLoginForm() {
     const { approved } = await approvalRes.json();
 
     if (!approved) {
+      // Sign out immediately — user exists in Auth but is not approved
+      await supabase.auth.signOut();
       setError("Access reserved. Membership is by invitation only.");
       setLoading(false);
       return;
     }
 
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (!signInError) {
-      window.location.href = "/members";
-      return;
-    }
-
-    if (
-      signInError.message.toLowerCase().includes("invalid") ||
-      signInError.message.toLowerCase().includes("credentials")
-    ) {
-      setStep("create");
-      setPassword("");
-      setLoading(false);
-      return;
-    }
-
-    setError(signInError.message);
-    setLoading(false);
-  }
-
-  async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    if (password !== confirmPw) {
-      setError("Passwords do not match.");
-      return;
-    }
-    setLoading(true);
-    setError("");
-
-    const createRes = await fetch("/api/members/create-account", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!createRes.ok) {
-      const { error: createErr } = await createRes.json();
-      if (createErr === "already_exists") {
-        setStep("login");
-        setPassword("");
-        setError("Incorrect password. Please try again.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-      setLoading(false);
-      return;
-    }
-
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (!signInError) {
-      window.location.href = "/members";
-      return;
-    }
-
-    setError(signInError.message);
-    setLoading(false);
+    router.push("/members");
+    router.refresh();
   }
 
   return (
@@ -161,234 +111,108 @@ export default function MembersLoginForm() {
             Members
           </div>
 
-          {step === "login" && (
-            <>
-              <h1
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontWeight: 300,
-                  fontSize: "clamp(28px,3vw,38px)",
-                  color: "#F4EFE4",
-                  lineHeight: 1.1,
-                  margin: "0 0 8px",
-                }}
-              >
-                Member access.
-              </h1>
-              <p
-                style={{
-                  fontSize: 13,
-                  color: "#9b988e",
-                  fontWeight: 300,
-                  margin: "0 0 36px",
-                  lineHeight: 1.6,
-                }}
-              >
-                Enter with your approved Vesper credentials.
-              </p>
+          <h1
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 300,
+              fontSize: "clamp(28px,3vw,38px)",
+              color: "#F4EFE4",
+              lineHeight: 1.1,
+              margin: "0 0 8px",
+            }}
+          >
+            Member access.
+          </h1>
+          <p
+            style={{
+              fontSize: 13,
+              color: "#9b988e",
+              fontWeight: 300,
+              margin: "0 0 36px",
+              lineHeight: 1.6,
+            }}
+          >
+            Enter with your Vesper credentials.
+          </p>
 
-              {error && (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#C6A258",
-                    border: "1px solid rgba(198,162,88,0.25)",
-                    padding: "12px 16px",
-                    marginBottom: 24,
-                    lineHeight: 1.5,
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  {error}
-                </div>
-              )}
-
-              <form
-                onSubmit={handleLogin}
-                style={{ display: "flex", flexDirection: "column", gap: 22 }}
-              >
-                <label style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                  <span style={fieldLabel}>Email</span>
-                  <input
-                    required
-                    type="email"
-                    placeholder="you@email.com"
-                    className="v-field"
-                    style={fieldStyle}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </label>
-                <label style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                  <span style={fieldLabel}>Password</span>
-                  <input
-                    required
-                    type="password"
-                    placeholder="••••••••"
-                    className="v-field"
-                    style={fieldStyle}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </label>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="v-submit"
-                  style={{
-                    marginTop: 4,
-                    color: "#06080F",
-                    background: loading ? "rgba(208,171,96,0.5)" : "#D0AB60",
-                    border: "none",
-                    fontSize: 12,
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    padding: "16px 30px",
-                    fontWeight: 600,
-                    cursor: loading ? "not-allowed" : "pointer",
-                    fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
-                  }}
-                >
-                  {loading ? "..." : "Continue"}
-                </button>
-              </form>
-
-              <div
-                style={{
-                  marginTop: 28,
-                  fontSize: 10,
-                  letterSpacing: "0.28em",
-                  textTransform: "uppercase",
-                  color: "#3a3830",
-                  textAlign: "center",
-                }}
-              >
-                Membership is by invitation only.
-              </div>
-            </>
+          {error && (
+            <div
+              style={{
+                fontSize: 12,
+                color: "#C6A258",
+                border: "1px solid rgba(198,162,88,0.25)",
+                padding: "12px 16px",
+                marginBottom: 24,
+                lineHeight: 1.5,
+                letterSpacing: "0.02em",
+              }}
+            >
+              {error}
+            </div>
           )}
 
-          {step === "create" && (
-            <>
-              <h1
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontWeight: 300,
-                  fontSize: "clamp(26px,3vw,36px)",
-                  color: "#F4EFE4",
-                  lineHeight: 1.1,
-                  margin: "0 0 8px",
-                }}
-              >
-                Create your password.
-              </h1>
-              <p
-                style={{
-                  fontSize: 13,
-                  color: "#9b988e",
-                  fontWeight: 300,
-                  margin: "0 0 36px",
-                  lineHeight: 1.6,
-                }}
-              >
-                Welcome,{" "}
-                <strong style={{ color: "#F4EFE4" }}>{email}</strong>. Set a
-                password to access your account.
-              </p>
+          <form
+            onSubmit={handleLogin}
+            style={{ display: "flex", flexDirection: "column", gap: 22 }}
+          >
+            <label style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+              <span style={fieldLabel}>Email</span>
+              <input
+                required
+                type="email"
+                placeholder="you@email.com"
+                className="v-field"
+                style={fieldStyle}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+              <span style={fieldLabel}>Password</span>
+              <input
+                required
+                type="password"
+                placeholder="••••••••"
+                className="v-field"
+                style={fieldStyle}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={loading}
+              className="v-submit"
+              style={{
+                marginTop: 4,
+                color: "#06080F",
+                background: loading ? "rgba(208,171,96,0.5)" : "#D0AB60",
+                border: "none",
+                fontSize: 12,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                padding: "16px 30px",
+                fontWeight: 600,
+                cursor: loading ? "not-allowed" : "pointer",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
+              }}
+            >
+              {loading ? "..." : "Continue"}
+            </button>
+          </form>
 
-              {error && (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#C6A258",
-                    border: "1px solid rgba(198,162,88,0.25)",
-                    padding: "12px 16px",
-                    marginBottom: 24,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {error}
-                </div>
-              )}
-
-              <form
-                onSubmit={handleCreate}
-                style={{ display: "flex", flexDirection: "column", gap: 22 }}
-              >
-                <label style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                  <span style={fieldLabel}>New Password</span>
-                  <input
-                    required
-                    type="password"
-                    placeholder="••••••••"
-                    className="v-field"
-                    style={fieldStyle}
-                    minLength={8}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </label>
-                <label style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                  <span style={fieldLabel}>Confirm Password</span>
-                  <input
-                    required
-                    type="password"
-                    placeholder="••••••••"
-                    className="v-field"
-                    style={fieldStyle}
-                    minLength={8}
-                    value={confirmPw}
-                    onChange={(e) => setConfirmPw(e.target.value)}
-                  />
-                </label>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="v-submit"
-                  style={{
-                    marginTop: 4,
-                    color: "#06080F",
-                    background: loading ? "rgba(208,171,96,0.5)" : "#D0AB60",
-                    border: "none",
-                    fontSize: 12,
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    padding: "16px 30px",
-                    fontWeight: 600,
-                    cursor: loading ? "not-allowed" : "pointer",
-                    fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
-                  }}
-                >
-                  {loading ? "..." : "Set Password"}
-                </button>
-              </form>
-
-              <button
-                onClick={() => {
-                  setStep("login");
-                  setPassword("");
-                  setError("");
-                }}
-                style={{
-                  marginTop: 20,
-                  background: "transparent",
-                  border: "none",
-                  color: "#56544c",
-                  fontSize: 11,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  cursor: "pointer",
-                  padding: 0,
-                  fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
-                  display: "block",
-                  width: "100%",
-                  textAlign: "center",
-                }}
-              >
-                ← Back
-              </button>
-            </>
-          )}
+          <div
+            style={{
+              marginTop: 28,
+              fontSize: 10,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              color: "#3a3830",
+              textAlign: "center",
+            }}
+          >
+            Membership is by invitation only.
+          </div>
         </div>
       </div>
     </div>

@@ -8,26 +8,47 @@ export const metadata = {
 };
 
 export default async function MembersPage() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error("[Members] Missing Supabase environment variables.");
+  }
+
   const supabase = createClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (!session) redirect("/members-access");
+  if (!session) {
+    console.log("[Members] No session found — redirecting to /members-access.");
+    redirect("/members-access");
+  }
 
   const admin = createAdminClient();
-  const { data: member } = await admin
+  const { data: member, error: memberError } = await admin
     .from("members")
-    .select("status, name")
+    .select("status, name, city, created_at")
     .eq("email", session.user.email!)
     .single();
 
+  if (memberError) {
+    console.error("[Members] Error fetching member record:", memberError.message);
+  }
+
   if (member?.status !== "approved") {
+    console.warn(
+      `[Members] User ${session.user.email} is not approved (status: ${member?.status ?? "not found"}) — signing out.`
+    );
     await supabase.auth.signOut();
     redirect("/members-access");
   }
 
   const memberName = member?.name || session.user.email;
+  const memberCity = member?.city || null;
+  const memberSince = member?.created_at
+    ? new Date(member.created_at).toLocaleDateString("en-GB", {
+        month: "long",
+        year: "numeric",
+      })
+    : null;
 
   return (
     <div
@@ -60,7 +81,38 @@ export default async function MembersPage() {
           alt="Vesper"
           style={{ width: 52, height: "auto", opacity: 0.9 }}
         />
-        <MembersSignOut />
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          {/* Profile avatar placeholder */}
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: "50%",
+              background: "rgba(198,162,88,0.12)",
+              border: "1px solid rgba(198,162,88,0.25)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 12,
+              color: "#C6A258",
+              letterSpacing: "0.05em",
+              fontWeight: 500,
+            }}
+          >
+            {memberName ? String(memberName)[0].toUpperCase() : "M"}
+          </div>
+          <span
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.12em",
+              color: "#9b988e",
+              fontWeight: 300,
+            }}
+          >
+            {memberName}
+          </span>
+          <MembersSignOut />
+        </div>
       </header>
 
       {/* Hero */}
@@ -141,7 +193,7 @@ export default async function MembersPage() {
                 fontWeight: 400,
                 fontSize: "clamp(22px,2.6vw,32px)",
                 color: "#F4EFE4",
-                marginBottom: 8,
+                marginBottom: 6,
                 lineHeight: 1.15,
               }}
             >
@@ -153,10 +205,22 @@ export default async function MembersPage() {
                 fontStyle: "italic",
                 fontSize: "clamp(14px,1.3vw,17px)",
                 color: "#C6A258",
-                marginBottom: 20,
+                marginBottom: 6,
               }}
             >
-              Noche de cierre · IFEMA
+              Noche de cierre · IFEMA Madrid
+            </div>
+            <div
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "#56544c",
+                marginBottom: 24,
+                fontWeight: 300,
+              }}
+            >
+              Domingo 13 de septiembre
             </div>
             <span
               style={{
@@ -164,21 +228,114 @@ export default async function MembersPage() {
                 width: 32,
                 height: 1,
                 background: "rgba(198,162,88,0.3)",
-                marginBottom: 20,
+                marginBottom: 24,
               }}
             />
-            <p
+            <button
               style={{
-                fontSize: 13,
-                color: "#56544c",
-                fontWeight: 300,
-                margin: 0,
-                letterSpacing: "0.06em",
+                background: "transparent",
+                border: "1px solid rgba(198,162,88,0.35)",
+                color: "#C6A258",
+                fontSize: 10,
+                letterSpacing: "0.28em",
                 textTransform: "uppercase",
+                padding: "12px 24px",
+                cursor: "pointer",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
+                fontWeight: 400,
               }}
             >
-              Details available soon.
-            </p>
+              View event
+            </button>
+          </div>
+        </section>
+
+        {/* Member Profile */}
+        <section style={{ marginBottom: "clamp(60px,9vh,100px)" }}>
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.4em",
+              textTransform: "uppercase",
+              color: "#C6A258",
+              marginBottom: 36,
+            }}
+          >
+            Member Profile
+          </div>
+          <div
+            style={{
+              background: "#0B0E16",
+              border: "1px solid rgba(198,162,88,0.13)",
+              padding: "clamp(28px,4vw,44px)",
+              maxWidth: 480,
+              display: "flex",
+              flexDirection: "column",
+              gap: 0,
+            }}
+          >
+            {/* Avatar */}
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: "50%",
+                background: "rgba(198,162,88,0.1)",
+                border: "1px solid rgba(198,162,88,0.2)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 22,
+                color: "#C6A258",
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 300,
+                marginBottom: 28,
+              }}
+            >
+              {memberName ? String(memberName)[0].toUpperCase() : "M"}
+            </div>
+
+            {[
+              { label: "Name", value: memberName },
+              { label: "Email", value: session.user.email },
+              ...(memberCity ? [{ label: "City", value: memberCity }] : []),
+              ...(memberSince ? [{ label: "Member since", value: memberSince }] : []),
+            ].map((row, i) => (
+              <div
+                key={row.label}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  gap: 20,
+                  padding: "14px 0",
+                  borderTop:
+                    i === 0 ? "none" : "1px solid rgba(198,162,88,0.08)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "#56544c",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {row.label}
+                </span>
+                <span
+                  style={{
+                    fontSize: 13,
+                    color: "#d6d2c8",
+                    fontWeight: 300,
+                    textAlign: "right",
+                  }}
+                >
+                  {row.value}
+                </span>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -279,11 +436,22 @@ export default async function MembersPage() {
               fontSize: "clamp(18px,1.8vw,22px)",
               color: "#d6d2c8",
               lineHeight: 1.75,
-              margin: 0,
+              margin: "0 0 20px",
             }}
           >
             A private environment built around elite sport, culture and the
             people who belong inside the circle.
+          </p>
+          <p
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "#3a3830",
+              margin: 0,
+            }}
+          >
+            Private member directory coming soon.
           </p>
         </section>
       </main>
