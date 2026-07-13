@@ -58,12 +58,14 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all paths except:
-     * - _next/static (Next.js static files)
-     * - _next/image (Next.js image optimization)
+     * Match only the routes that need session handling or protection.
+     * Explicitly excludes:
+     * - /api/* (all API routes, including /api/members/login)
+     * - _next/static, _next/image
+     * - /assets/*
      * - favicon.ico, sitemap.xml, robots.txt
-     * - /assets/* (public assets)
      */
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|assets/).*)",
+    "/members/:path*",
+    "/members-access",
   ],
 };

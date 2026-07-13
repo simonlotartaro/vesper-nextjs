@@ -32,16 +32,21 @@ export default function MembersLoginForm() {
     setLoading(true);
     setError("");
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
     try {
       const res = await fetch("/api/members/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
+        signal: controller.signal,
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           password,
         }),
       });
+      clearTimeout(timeoutId);
 
       if (res.status === 401) {
         setError("Invalid email or password.");
@@ -60,7 +65,9 @@ export default function MembersLoginForm() {
 
       window.location.assign("/members");
     } catch (err) {
-      console.error("[MembersLoginForm] Unexpected error:", err);
+      clearTimeout(timeoutId);
+      const isAbort = err instanceof Error && err.name === "AbortError";
+      console.error("[MembersLoginForm]", isAbort ? "Request timed out" : "Unexpected error:", err);
       setError("Unable to access the members area. Please try again.");
     } finally {
       setLoading(false);
