@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 
 const fieldStyle: React.CSSProperties = {
   background: "transparent",
@@ -24,7 +23,6 @@ const fieldLabel: React.CSSProperties = {
 };
 
 export default function MembersLoginForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,33 +35,44 @@ export default function MembersLoginForm() {
 
     const supabase = createClient();
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (signInError) {
-      setError("Invalid email or password.");
-      setLoading(false);
-      return;
-    }
+      if (signInError) {
+        setError("Invalid email or password.");
+        return;
+      }
 
-    // Verify approval server-side — email is read from the active session, not the request body
-    const approvalRes = await fetch("/api/members/check-approval", {
-      method: "POST",
-    });
-    const { approved } = await approvalRes.json();
+      // Email is read from the active session server-side — not sent in body
+      const approvalRes = await fetch("/api/members/check-approval", {
+        method: "POST",
+      });
 
-    if (!approved) {
-      // Sign out immediately — user exists in Auth but is not approved
+      if (approvalRes.status === 500) {
+        await supabase.auth.signOut();
+        setError("Unable to verify membership. Please try again.");
+        return;
+      }
+
+      const { approved } = await approvalRes.json();
+
+      if (!approved) {
+        await supabase.auth.signOut();
+        setError("Access reserved. Membership is by invitation only.");
+        return;
+      }
+
+      window.location.assign("/members");
+    } catch (err) {
+      console.error("[MembersLoginForm] Unexpected error:", err);
       await supabase.auth.signOut();
-      setError("Access reserved. Membership is by invitation only.");
+      setError("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push("/members");
-    router.refresh();
   }
 
   return (

@@ -4,34 +4,42 @@ import { NextResponse } from "next/server";
 
 export async function POST() {
   const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
 
-  if (!session?.user?.email) {
-    console.warn("[check-approval] No authenticated session found.");
-    return NextResponse.json({ approved: false }, { status: 401 });
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user?.email) {
+    console.warn("[check-approval] No authenticated user:", authError?.message ?? "no user");
+    return NextResponse.json({ approved: false, error: "not_authenticated" }, { status: 401 });
   }
 
-  const email = session.user.email.toLowerCase().trim();
+  const email = user.email.toLowerCase().trim();
+  console.log(`[check-approval] Checking membership for: ${email}`);
 
   const admin = createAdminClient();
-  const { data, error } = await admin
+  const { data, error: dbError } = await admin
     .from("members")
-    .select("status")
+    .select("status, email, name")
     .eq("email", email)
-    .single();
+    .maybeSingle();
 
-  if (error) {
-    console.error(`[check-approval] DB error for ${email}:`, error.message);
-    return NextResponse.json({ approved: false }, { status: 500 });
+  if (dbError) {
+    console.error(`[check-approval] DB error for ${email}:`, dbError.message, dbError.code);
+    return NextResponse.json({ approved: false, error: "membership_check_failed" }, { status: 500 });
   }
 
-  const approved = data?.status === "approved";
-
-  if (!approved) {
-    console.warn(`[check-approval] User ${email} not approved (status: ${data?.status ?? "not found"}).`);
+  if (!data) {
+    console.warn(`[check-approval] No member row found for: ${email}`);
+    return NextResponse.json({ approved: false, error: "member_not_found" }, { status: 403 });
   }
 
-  return NextResponse.json({ approved });
+  if (data.status !== "approved") {
+    console.warn(`[check-approval] Member ${email} has status: "${data.status}" — access denied.`);
+    return NextResponse.json({ approved: false, error: "not_approved" }, { status: 403 });
+  }
+
+  console.log(`[check-approval] Access granted for: ${email}`);
+  return NextResponse.json({ approved: true });
 }
