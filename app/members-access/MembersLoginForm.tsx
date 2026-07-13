@@ -48,11 +48,9 @@ export default function MembersLoginForm() {
       return;
     }
 
-    // Verify approval server-side before redirecting
+    // Verify approval server-side — email is read from the active session, not the request body
     const approvalRes = await fetch("/api/members/check-approval", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
     });
     const { approved } = await approvalRes.json();
 
