@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import MembersLoginFields from "@/components/MembersLoginFields";
 
 /**
  * Vesper — full-screen interactive homepage.
@@ -288,12 +288,6 @@ export default function VesperHome() {
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [robotChecked, setRobotChecked] = useState(false);
   const [membersOpen, setMembersOpen] = useState(false);
-  const [membersStep, setMembersStep] = useState<"login" | "create" | "done">("login");
-  const [membersEmail, setMembersEmail] = useState("");
-  const [membersPassword, setMembersPassword] = useState("");
-  const [membersConfirmPw, setMembersConfirmPw] = useState("");
-  const [membersError, setMembersError] = useState("");
-  const [membersLoading, setMembersLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [eventOpen, setEventOpen] = useState(false);
   const [lang, setLang] = useState<Lang>("en");
@@ -389,7 +383,7 @@ export default function VesperHome() {
                 >
                   <div style={{ position: "absolute", bottom: "9vh", left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, pointerEvents: "auto" }}>
                     <span style={{ width: 28, height: 1, background: "rgba(198,162,88,0.7)" }} />
-                    <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersPassword(""); setMembersConfirmPw(""); setMembersError(""); setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{t.menu[navKey(col.nav)]}</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{t.menu[navKey(col.nav)]}</a>
                   </div>
                 </div>
               );
@@ -429,7 +423,7 @@ export default function VesperHome() {
                   style={{ position: "relative", flex: 1, minHeight: 118, overflow: "hidden", borderTop: "1px solid rgba(198,162,88,0.18)", cursor: "pointer" }}
                 >
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 26px" }}>
-                    <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersStep("login"); setMembersEmail(""); setMembersPassword(""); setMembersConfirmPw(""); setMembersError(""); setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease" }}>{t.menu[navKey(col.nav)]}</a>
+                    <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease" }}>{t.menu[navKey(col.nav)]}</a>
                   </div>
                 </div>
               );
@@ -450,7 +444,7 @@ export default function VesperHome() {
                 { key: "about" as const,       action: () => { setMenuOpen(false); setEventOpen(false); setMembersOpen(false); setContactOpen(false); setAboutOpen(true); } },
                 { key: "application" as const, action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setEventOpen(true); } },
                 { key: "contact" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setMembersOpen(false); setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } },
-                { key: "members" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setContactOpen(false); setMembersStep("login"); setMembersEmail(""); setMembersPassword(""); setMembersConfirmPw(""); setMembersError(""); setMembersOpen(true); } },
+                { key: "members" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(true); } },
               ]).map((item) => (
                 <a key={item.key} href="#" onClick={(e) => { e.preventDefault(); item.action(); }}
                   style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(30px,3.2vw,52px)", color: "#F4EFE4", textDecoration: "none", lineHeight: 1, letterSpacing: "-0.01em", transition: "color .3s ease" }}
@@ -695,82 +689,7 @@ export default function VesperHome() {
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
           </button>
           <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", width: "100%", maxWidth: 420, background: "#0B0E16", border: "1px solid rgba(198,162,88,0.22)", boxShadow: "0 40px 120px rgba(0,0,0,0.7)", padding: "clamp(36px,5vw,52px)", animation: "vIn .55s cubic-bezier(.16,1,.3,1) both" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 24 }}>{t.members.eyebrow}</div>
-
-            {membersStep === "login" && (
-              <>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(28px,3vw,38px)", color: "#F4EFE4", lineHeight: 1.1, margin: "0 0 8px" }}>{t.members.loginTitle}</h2>
-                <p style={{ fontSize: 13, color: "#9b988e", fontWeight: 300, margin: "0 0 36px", lineHeight: 1.6 }}>{t.members.loginDesc}</p>
-                {membersError && (
-                  <div style={{ fontSize: 12, color: "#C6A258", border: "1px solid rgba(198,162,88,0.25)", padding: "12px 16px", marginBottom: 24, lineHeight: 1.5, letterSpacing: "0.02em" }}>{membersError}</div>
-                )}
-                <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    setMembersLoading(true);
-                    setMembersError("");
-                    const approvalRes = await fetch("/api/members/check-approval", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: membersEmail }) });
-                    const { approved } = await approvalRes.json();
-                    if (!approved) { setMembersError(t.members.notApprovedMsg); setMembersLoading(false); return; }
-                    const supabase = createClient();
-                    const { error: signInError } = await supabase.auth.signInWithPassword({ email: membersEmail, password: membersPassword });
-                    if (!signInError) { window.location.href = "/members"; return; }
-                    if (signInError.message.toLowerCase().includes("invalid") || signInError.message.toLowerCase().includes("credentials")) {
-                      setMembersStep("create"); setMembersPassword(""); setMembersLoading(false); return;
-                    }
-                    setMembersError(signInError.message); setMembersLoading(false);
-                  }}
-                  style={{ display: "flex", flexDirection: "column", gap: 22 }}
-                >
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.members.emailLabel}</span><input required type="email" placeholder="you@email.com" className="v-field" style={fieldStyle} value={membersEmail} onChange={(e) => setMembersEmail(e.target.value)} /></label>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.members.pwInputLabel}</span><input required type="password" placeholder="••••••••" className="v-field" style={fieldStyle} value={membersPassword} onChange={(e) => setMembersPassword(e.target.value)} /></label>
-                  <button type="submit" disabled={membersLoading} className="v-submit" style={{ marginTop: 4, color: "#06080F", background: membersLoading ? "rgba(208,171,96,0.5)" : "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: membersLoading ? "not-allowed" : "pointer" }}>{membersLoading ? "..." : t.members.continueBtn}</button>
-                </form>
-                <div style={{ marginTop: 28, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: "#3a3830", textAlign: "center" }}>{t.members.inviteNote}</div>
-              </>
-            )}
-
-            {membersStep === "create" && (
-              <>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(26px,3vw,36px)", color: "#F4EFE4", lineHeight: 1.1, margin: "0 0 8px" }}>{t.members.createTitle}</h2>
-                <p style={{ fontSize: 13, color: "#9b988e", fontWeight: 300, margin: "0 0 36px", lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: t.members.createDesc.replace("{email}", `<strong style="color:#F4EFE4">${membersEmail}</strong>`) }} />
-                {membersError && (
-                  <div style={{ fontSize: 12, color: "#C6A258", border: "1px solid rgba(198,162,88,0.25)", padding: "12px 16px", marginBottom: 24, lineHeight: 1.5 }}>{membersError}</div>
-                )}
-                <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    if (membersPassword !== membersConfirmPw) { setMembersError(t.members.pwMismatch); return; }
-                    setMembersLoading(true); setMembersError("");
-                    const createRes = await fetch("/api/members/create-account", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: membersEmail, password: membersPassword }) });
-                    if (!createRes.ok) {
-                      const { error: createErr } = await createRes.json();
-                      if (createErr === "already_exists") { setMembersStep("login"); setMembersPassword(""); setMembersConfirmPw(""); setMembersError(t.members.wrongPwMsg); }
-                      else { setMembersError("Something went wrong. Please try again."); }
-                      setMembersLoading(false); return;
-                    }
-                    const supabase = createClient();
-                    const { error: signInError } = await supabase.auth.signInWithPassword({ email: membersEmail, password: membersPassword });
-                    if (!signInError) { window.location.href = "/members"; return; }
-                    setMembersError(signInError.message); setMembersLoading(false);
-                  }}
-                  style={{ display: "flex", flexDirection: "column", gap: 22 }}
-                >
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.members.pwLabel}</span><input required type="password" placeholder="••••••••" className="v-field" style={fieldStyle} minLength={8} value={membersPassword} onChange={(e) => setMembersPassword(e.target.value)} /></label>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.members.confirmLabel}</span><input required type="password" placeholder="••••••••" className="v-field" style={fieldStyle} minLength={8} value={membersConfirmPw} onChange={(e) => setMembersConfirmPw(e.target.value)} /></label>
-                  <button type="submit" disabled={membersLoading} className="v-submit" style={{ marginTop: 4, color: "#06080F", background: membersLoading ? "rgba(208,171,96,0.5)" : "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: membersLoading ? "not-allowed" : "pointer" }}>{membersLoading ? "..." : t.members.setPwBtn}</button>
-                </form>
-                <button onClick={() => { setMembersStep("login"); setMembersPassword(""); setMembersConfirmPw(""); setMembersError(""); }} style={{ marginTop: 20, background: "transparent", border: "none", color: "#56544c", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", cursor: "pointer", padding: 0, display: "block", width: "100%", textAlign: "center" }}>← Back</button>
-              </>
-            )}
-
-            {membersStep === "done" && (
-              <div style={{ textAlign: "center", padding: "20px 0 10px" }}>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 38, color: "#C6A258", marginBottom: 16 }}>{t.members.doneTitle}</div>
-                <p style={{ fontSize: 14, color: "#bdb9af", fontWeight: 300, lineHeight: 1.7, margin: "0 auto 32px", maxWidth: 300 }}>{t.members.doneMsg}</p>
-                <button onClick={() => setMembersOpen(false)} className="v-close" style={{ background: "transparent", border: "1px solid rgba(236,231,219,0.2)", color: "#ECE7DB", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", padding: "13px 30px", cursor: "pointer" }}>{t.members.enterBtn}</button>
-              </div>
-            )}
+            <MembersLoginFields key={String(membersOpen)} strings={t.members} />
           </div>
         </div>
       )}
