@@ -87,6 +87,14 @@ const T = {
         { name: "KITCHEN", desc: "A gastronomic experience of the highest level." },
         { name: "LIVE",    desc: "Live music to accompany the night." },
       ],
+      experienceLabel: "THE VESPER EXPERIENCE",
+      experienceIntro: "A night designed as one continuous journey — from the first welcome drink to the final set.",
+      timeline: [
+        { time: "19:30", name: "ARRIVAL", items: ["Welcome drink", "Valet parking"] },
+        { time: "20:00", name: "CULINARY EXPERIENCE", items: ["Excellence cocktail menu", "Curated gastronomic corners", "Signature cocktail stations"] },
+        { time: "22:00", name: "THE NIGHT UNFOLDS", items: ["A musical journey featuring seven DJs", "Premium open bar throughout the evening", "Late-night bites"] },
+      ],
+      experienceStats: ["7 DJs", "6 Hours of Music", "Premium Open Bar"],
       venue: "RAMSÉS",
       address: "Pl. de la Independencia, 4\nSalamanca, 28001 Madrid",
       access: "Private access\nFirst floor",
@@ -167,6 +175,14 @@ const T = {
         { name: "COCINA",  desc: "Propuesta gastronómica de alto nivel." },
         { name: "EN VIVO", desc: "Música en vivo para acompañar la noche." },
       ],
+      experienceLabel: "LA EXPERIENCIA VESPER",
+      experienceIntro: "Una noche concebida como un único recorrido continuo — desde el primer welcome drink hasta el último set.",
+      timeline: [
+        { time: "19:30", name: "LLEGADA", items: ["Welcome drink", "Valet parking"] },
+        { time: "20:00", name: "EXPERIENCIA CULINARIA", items: ["Carta de coctelería de excelencia", "Rincones gastronómicos seleccionados", "Estaciones de coctelería de autor"] },
+        { time: "22:00", name: "LA NOCHE SE DESPLIEGA", items: ["Un viaje musical con siete DJs", "Barra libre premium durante toda la velada", "Bocados de madrugada"] },
+      ],
+      experienceStats: ["7 DJs", "6 horas de música", "Barra libre premium"],
       venue: "RAMSÉS",
       address: "Pl. de la Independencia, 4\nSalamanca, 28001 Madrid",
       access: "Acceso privado\nPrimera planta",
@@ -247,6 +263,14 @@ const T = {
         { name: "CUISINE", desc: "Proposition gastronomique de haut niveau." },
         { name: "LIVE",    desc: "Musique en direct pour accompagner la nuit." },
       ],
+      experienceLabel: "L'EXPÉRIENCE VESPER",
+      experienceIntro: "Une nuit conçue comme un seul parcours continu — du premier welcome drink au dernier set.",
+      timeline: [
+        { time: "19h30", name: "ARRIVÉE", items: ["Welcome drink", "Voiturier"] },
+        { time: "20h00", name: "EXPÉRIENCE CULINAIRE", items: ["Carte de cocktails d'excellence", "Coins gastronomiques sélectionnés", "Stations de cocktails signature"] },
+        { time: "22h00", name: "LA NUIT SE DÉPLOIE", items: ["Un voyage musical avec sept DJs", "Open bar premium tout au long de la soirée", "Bouchées de fin de soirée"] },
+      ],
+      experienceStats: ["7 DJs", "6 heures de musique", "Open bar premium"],
       venue: "RAMSÉS",
       address: "Pl. de la Independencia, 4\nSalamanca, 28001 Madrid",
       access: "Accès privé\nPremier étage",
@@ -638,6 +662,49 @@ export default function VesperHome() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* EXPERIENCE */}
+          <div style={{ padding: "clamp(20px,3vh,40px) clamp(28px,6vw,80px) clamp(48px,7vh,80px)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: "clamp(22px,3vh,32px)" }}>
+              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
+              <span style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C6A258", whiteSpace: "nowrap" }}>{t.event.experienceLabel}</span>
+              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
+            </div>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontStyle: "italic", fontSize: "clamp(15px,1.4vw,20px)", color: "#d6d2c8", lineHeight: 1.75, textAlign: "center", maxWidth: 620, margin: "0 auto clamp(38px,6vh,64px)" }}>{t.event.experienceIntro}</p>
+
+            <div style={{ maxWidth: 780, margin: "0 auto" }}>
+              {(t.event.timeline as readonly { time: string; name: string; items: readonly string[] }[]).map((step, i, arr) => (
+                <div key={i} style={{ display: "flex", gap: isMobile ? 18 : 34, paddingBottom: i === arr.length - 1 ? 0 : "clamp(30px,4.5vh,48px)" }}>
+                  {/* rail */}
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, paddingTop: 6 }}>
+                    <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#C6A258", flexShrink: 0 }} />
+                    {i !== arr.length - 1 && <span style={{ flex: 1, width: 1, background: "linear-gradient(to bottom, rgba(198,162,88,0.45), rgba(198,162,88,0.1))", marginTop: 8 }} />}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: isMobile ? 10 : 16, marginBottom: 14 }}>
+                      <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px,2.6vw,34px)", color: "#C6A258", lineHeight: 1 }}>{step.time}</span>
+                      <span style={{ fontSize: 10, letterSpacing: "0.36em", textTransform: "uppercase", color: "#F4EFE4" }}>{step.name}</span>
+                    </div>
+                    {step.items.map((item, j) => (
+                      <div key={j} style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 7 }}>
+                        <span style={{ color: "#C6A258", opacity: 0.55, fontSize: 12, lineHeight: 1.7, flexShrink: 0 }}>—</span>
+                        <span style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(14px,1.3vw,18px)", color: "#bdb9af", lineHeight: 1.7 }}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: "clamp(14px,2.5vw,32px)", marginTop: "clamp(40px,6vh,68px)", paddingTop: "clamp(28px,4vh,40px)", borderTop: "1px solid rgba(198,162,88,0.18)", maxWidth: 780, marginLeft: "auto", marginRight: "auto" }}>
+              {(t.event.experienceStats as readonly string[]).map((stat, i, arr) => (
+                <React.Fragment key={i}>
+                  <span style={{ fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#C6A258", whiteSpace: "nowrap" }}>{stat}</span>
+                  {i !== arr.length - 1 && <span style={{ color: "rgba(198,162,88,0.4)", fontSize: 10 }}>·</span>}
+                </React.Fragment>
+              ))}
             </div>
           </div>
 
