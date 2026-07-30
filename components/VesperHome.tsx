@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import MembersLoginFields from "@/components/MembersLoginFields";
+import AboutSection from "@/components/AboutSection";
 
 /**
  * Vesper — full-screen interactive homepage.
@@ -367,12 +368,14 @@ export default function VesperHome() {
 
       {/* ============ LANGUAGE PICKER ============ */}
       {ready && (
-        <div style={{ position: "fixed", top: 42, right: 90, zIndex: 300, display: "flex", gap: 14, alignItems: "center" }}>
+        <div style={{ position: "fixed", top: 38, right: 82, zIndex: 300, display: "flex", gap: 6, alignItems: "center" }}>
           {(["en", "es", "fr"] as Lang[]).map((l) => (
             <button
               key={l}
               onClick={() => setLang(l)}
-              style={{ background: "transparent", border: "none", cursor: "pointer", fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: lang === l ? "#C6A258" : "rgba(236,231,219,0.3)", padding: 0, transition: "color .3s ease", fontWeight: lang === l ? 500 : 300 }}
+              aria-current={lang === l ? "true" : undefined}
+              className="v-lang"
+              style={{ background: "transparent", border: "none", cursor: "pointer", fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: lang === l ? "#C6A258" : "rgba(236,231,219,0.58)", padding: "8px 6px", transition: "color .3s ease", fontWeight: lang === l ? 500 : 400, borderBottom: lang === l ? "1px solid #C6A258" : "1px solid transparent", lineHeight: 1 }}
             >
               {l}
             </button>
@@ -385,11 +388,12 @@ export default function VesperHome() {
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
-          style={{ position: "fixed", top: 36, right: 28, zIndex: 300, width: 46, height: 46, background: "transparent", border: "1px solid rgba(198,162,88,0.55)", borderRadius: "50%", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, padding: 0, transition: "border-color .3s ease" }}
+          className="v-close"
+          style={{ position: "fixed", top: 36, right: 28, zIndex: 300, width: 39, height: 39, background: "transparent", border: "1px solid rgba(198,162,88,0.38)", borderRadius: "50%", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5, padding: 0, color: "#C6A258" }}
         >
-          <span style={{ display: "block", height: 1, background: "#C6A258", transition: "all .4s cubic-bezier(.16,1,.3,1)", width: 18, transform: menuOpen ? "translateY(3.5px) rotate(45deg)" : "none", transformOrigin: "center" }} />
-          <span style={{ display: "block", height: 1, background: "#C6A258", transition: "all .4s cubic-bezier(.16,1,.3,1)", width: menuOpen ? 18 : 13, transform: menuOpen ? "translateY(-3.5px) rotate(-45deg)" : "none", transformOrigin: "center" }} />
-          {!menuOpen && <span style={{ display: "block", height: 1, background: "#C6A258", width: 8 }} />}
+          <span style={{ display: "block", height: 1, background: "currentColor", transition: "all .4s cubic-bezier(.16,1,.3,1)", width: 15, transform: menuOpen ? "translateY(3px) rotate(45deg)" : "none", transformOrigin: "center" }} />
+          <span style={{ display: "block", height: 1, background: "currentColor", transition: "all .4s cubic-bezier(.16,1,.3,1)", width: menuOpen ? 15 : 11, transform: menuOpen ? "translateY(-3px) rotate(-45deg)" : "none", transformOrigin: "center" }} />
+          {!menuOpen && <span style={{ display: "block", height: 1, background: "currentColor", width: 7 }} />}
         </button>
       )}
 
@@ -535,36 +539,11 @@ export default function VesperHome() {
 
       {/* ============ ABOUT OVERLAY ============ */}
       {aboutOpen && (
-        <div onClick={() => setAboutOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(4,5,10,0.96)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", overflowY: "auto", animation: "vUp .4s both" }}>
-          <button onClick={() => setAboutOpen(false)} className="v-close" style={{ position: "fixed", top: 28, left: 28, zIndex: 150, background: "transparent", border: "1px solid rgba(198,162,88,0.4)", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
+        <div style={{ position: "fixed", inset: 0, zIndex: 100, background: "#06080F", overflowY: "auto", animation: "vFadeIn .5s both" }}>
+          <button onClick={() => setAboutOpen(false)} aria-label="Close" className="v-close" style={{ position: "fixed", top: 30, left: 26, zIndex: 150, background: "rgba(6,8,15,0.6)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(198,162,88,0.32)", borderRadius: "50%", width: 37, height: 37, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
           </button>
-          <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(60px,10vh,120px) clamp(28px,6vw,60px)" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 32 }}>{t.about.eyebrow}</div>
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(36px,5vw,58px)", color: "#F4EFE4", lineHeight: 1.1, margin: "0 0 48px", whiteSpace: "pre-line" }}>{t.about.headline}</h1>
-            <span style={{ display: "block", width: 40, height: 1, background: "#C6A258", marginBottom: 48 }} />
-            <div style={{ display: "flex", flexDirection: "column", gap: 28, fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(17px,1.6vw,21px)", color: "#d6d2c8", lineHeight: 1.75 }}>
-              <p style={{ margin: 0 }}>{t.about.p1}</p>
-              <p style={{ margin: 0 }}>{t.about.p2}</p>
-              <p style={{ margin: 0 }}>{t.about.p3}</p>
-              <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 10, fontStyle: "italic", color: "#9b988e", fontSize: "clamp(15px,1.4vw,18px)" }}>
-                {t.about.neg.map((n) => <span key={n}>{n}</span>)}
-              </div>
-              <p style={{ margin: 0 }}>{t.about.p4}</p>
-              <p style={{ margin: 0 }}>{t.about.p5}</p>
-              <div style={{ marginTop: 8 }}>
-                <div style={{ fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "#C6A258", marginBottom: 24 }}>{t.about.visionLabel}</div>
-                <p style={{ margin: "0 0 24px" }}>{t.about.vp1}</p>
-                <p style={{ margin: "0 0 24px" }}>{t.about.vp2}</p>
-                <div style={{ borderLeft: "1px solid rgba(198,162,88,0.3)", paddingLeft: 28, display: "flex", flexDirection: "column", gap: 8, fontStyle: "italic", color: "#9b988e", fontSize: "clamp(14px,1.3vw,17px)", margin: "4px 0 24px" }}>
-                  {t.about.vBullets.map((b) => <span key={b}>{b}</span>)}
-                </div>
-                <p style={{ margin: "0 0 24px" }}>{t.about.vp3}</p>
-                <p style={{ margin: 0 }}>{t.about.vp4}</p>
-              </div>
-            </div>
-            <div style={{ marginTop: 64, fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontWeight: 300, fontSize: "clamp(22px,2.4vw,30px)", color: "#F4EFE4" }}>{t.about.closing}</div>
-          </div>
+          <AboutSection t={t.about} isMobile={isMobile} />
         </div>
       )}
 
