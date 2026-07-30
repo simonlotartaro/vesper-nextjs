@@ -172,6 +172,18 @@ function Anchor({ isMobile }: { isMobile: boolean }) {
           }}
         />
       )}
+      {!ANCHOR_SRC && (
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/vesper-logo.png"
+            alt="Vesper"
+            loading="lazy"
+            decoding="async"
+            style={{ width: "46%", maxWidth: 170, height: "auto", opacity: 0.92, filter: "drop-shadow(0 12px 34px rgba(0,0,0,0.55))" }}
+          />
+        </div>
+      )}
       {/* grain + vignette keep the plate cinematic rather than flat */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: GRAIN, opacity: 0.16, mixBlendMode: "overlay", pointerEvents: "none" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0) 45%, rgba(4,5,10,0.72) 100%)", pointerEvents: "none" }} />
