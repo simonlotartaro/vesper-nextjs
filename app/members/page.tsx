@@ -208,7 +208,7 @@ export default async function MembersPage() {
                 marginBottom: 6,
               }}
             >
-              Noche de cierre · IFEMA Madrid
+              Noche de cierre · Ramsés Madrid
             </div>
             <div
               style={{
