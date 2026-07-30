@@ -598,7 +598,7 @@ export default function VesperHome() {
 
           {/* HERO */}
           <div style={{ position: "relative", minHeight: isMobile ? "52vh" : "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(80px,12vh,140px) clamp(28px,6vw,80px) clamp(60px,8vh,100px)", overflow: "hidden" }}>
-            <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/assets/wah-venue.png')", backgroundSize: "cover", backgroundPosition: "center center", zIndex: 0 }} />
+            <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/assets/ramses-puerta-de-alcala.jpg')", backgroundSize: "cover", backgroundPosition: "center center", zIndex: 0 }} />
             <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.72)", zIndex: 1 }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.45) 0%, rgba(6,8,15,0.1) 40%, rgba(6,8,15,0.82) 100%)", zIndex: 1 }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -657,14 +657,8 @@ export default function VesperHome() {
                 </div>
               ))}
             </div>
-            <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "12px 36px", marginBottom: "clamp(36px,5vh,64px)" }}>
+            <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "12px 36px" }}>
               <span style={{ fontSize: 10, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C6A258" }}>{t.event.inviteOnly}</span>
-            </div>
-
-            {/* MAP */}
-            <div style={{ width: "100%", maxWidth: 860, margin: "0 auto", border: "1px solid rgba(198,162,88,0.18)", overflow: "hidden" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/WaHH.png" alt="WAH Madrid — IFEMA Hall 2" style={{ width: "100%", display: "block", opacity: 0.88 }} />
             </div>
           </div>
 
