@@ -75,6 +75,7 @@ const T = {
       interestedLabel: "Interested In",
       interestedOptions: ["Select", "Madrid GP 2026", "Partnership", "Membership", "Private Table", "General Access"],
       noteLabel: "Short Note", notePlaceholder: "Tell us, briefly.", submitBtn: "Submit Request",
+      sendingBtn: "Sending…", errorMsg: "We could not send your request. Please try again or write to info@vesperevent.com.",
       successTitle: "Request received.", successMsg: "If aligned, we will be in touch.", closeBtn: "Close",
     },
     event: {
@@ -163,6 +164,7 @@ const T = {
       interestedLabel: "Interesado En",
       interestedOptions: ["Seleccionar", "Madrid GP 2026", "Alianza", "Membresía", "Mesa Privada", "Acceso General"],
       noteLabel: "Nota Breve", notePlaceholder: "Contanos, brevemente.", submitBtn: "Enviar Solicitud",
+      sendingBtn: "Enviando…", errorMsg: "No pudimos enviar tu solicitud. Intentá de nuevo o escribinos a info@vesperevent.com.",
       successTitle: "Solicitud recibida.", successMsg: "Si hay afinidad, estaremos en contacto.", closeBtn: "Cerrar",
     },
     event: {
@@ -251,6 +253,7 @@ const T = {
       interestedLabel: "Intéressé Par",
       interestedOptions: ["Sélectionner", "Madrid GP 2026", "Partenariat", "Adhésion", "Table Privée", "Accès Général"],
       noteLabel: "Note Brève", notePlaceholder: "Dites-nous, brièvement.", submitBtn: "Soumettre la demande",
+      sendingBtn: "Envoi…", errorMsg: "Nous n'avons pas pu envoyer votre demande. Réessayez ou écrivez à info@vesperevent.com.",
       successTitle: "Demande reçue.", successMsg: "Si votre profil correspond, nous prendrons contact.", closeBtn: "Fermer",
     },
     event: {
@@ -308,6 +311,8 @@ export default function VesperHome() {
   const [ready, setReady] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [appSending, setAppSending] = useState(false);
+  const [appError, setAppError] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -354,8 +359,29 @@ export default function VesperHome() {
     return () => window.removeEventListener("popstate", handlePop);
   }, []);
 
-  const openModal = () => { setModalOpen(true); setSubmitted(false); };
+  const openModal = () => { setModalOpen(true); setSubmitted(false); setAppError(false); };
   const closeModal = () => setModalOpen(false);
+
+  const submitApplication = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (appSending) return;
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+    setAppSending(true);
+    setAppError(false);
+    try {
+      const res = await fetch("/api/application", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, lang }),
+      });
+      if (!res.ok) throw new Error("send_failed");
+      setSubmitted(true);
+    } catch {
+      setAppError(true);
+    } finally {
+      setAppSending(false);
+    }
+  };
 
   const sel = isMobile ? mobileActive : hovered;
   const isDesktop = ready && !isMobile;
@@ -511,25 +537,26 @@ export default function VesperHome() {
               <div>
                 <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "clamp(28px,4vw,38px)", color: "#F4EFE4", lineHeight: 1 }}>{t.application.title}</div>
                 <p style={{ fontSize: 13, lineHeight: 1.65, color: "#9b988e", fontWeight: 300, margin: "14px 0 30px", maxWidth: 420 }}>{t.application.desc}</p>
-                <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+                <form onSubmit={submitApplication} style={{ display: "flex", flexDirection: "column", gap: 22 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22 }}>
-                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.nameLabel}</span><input required type="text" placeholder={t.application.nameLabel} className="v-field" style={fieldStyle} /></label>
-                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.emailLabel}</span><input required type="email" placeholder="you@email.com" className="v-field" style={fieldStyle} /></label>
+                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.nameLabel}</span><input required name="name" type="text" placeholder={t.application.nameLabel} className="v-field" style={fieldStyle} /></label>
+                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.emailLabel}</span><input required name="email" type="email" placeholder="you@email.com" className="v-field" style={fieldStyle} /></label>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22 }}>
-                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.cityLabel}</span><input type="text" placeholder={t.application.cityLabel} className="v-field" style={fieldStyle} /></label>
+                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.cityLabel}</span><input name="city" type="text" placeholder={t.application.cityLabel} className="v-field" style={fieldStyle} /></label>
                     <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.roleLabel}</span>
-                      <select className="v-field" style={fieldStyle} defaultValue="">{t.application.roleOptions.map((o) => <option key={o} value={o === t.application.roleOptions[0] ? "" : o}>{o}</option>)}</select>
+                      <select name="role" className="v-field" style={fieldStyle} defaultValue="">{t.application.roleOptions.map((o) => <option key={o} value={o === t.application.roleOptions[0] ? "" : o}>{o}</option>)}</select>
                     </label>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22 }}>
-                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.referredLabel}</span><input type="text" placeholder={t.application.referredPlaceholder} className="v-field" style={fieldStyle} /></label>
+                    <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.referredLabel}</span><input name="referred" type="text" placeholder={t.application.referredPlaceholder} className="v-field" style={fieldStyle} /></label>
                     <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.interestedLabel}</span>
-                      <select className="v-field" style={fieldStyle} defaultValue="">{t.application.interestedOptions.map((o) => <option key={o} value={o === t.application.interestedOptions[0] ? "" : o}>{o}</option>)}</select>
+                      <select name="interested" className="v-field" style={fieldStyle} defaultValue="">{t.application.interestedOptions.map((o) => <option key={o} value={o === t.application.interestedOptions[0] ? "" : o}>{o}</option>)}</select>
                     </label>
                   </div>
-                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.noteLabel}</span><textarea rows={3} placeholder={t.application.notePlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
-                  <button type="submit" className="v-submit" style={{ marginTop: 8, color: "#06080F", background: "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.2em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: "pointer" }}>{t.application.submitBtn}</button>
+                  <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.noteLabel}</span><textarea name="note" rows={3} placeholder={t.application.notePlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
+                  {appError && <div role="alert" style={{ fontSize: 13, lineHeight: 1.6, color: "#E0806A", border: "1px solid rgba(224,128,106,0.32)", background: "rgba(224,128,106,0.07)", padding: "12px 16px" }}>{t.application.errorMsg}</div>}
+                  <button type="submit" disabled={appSending} className="v-submit" style={{ marginTop: 8, color: "#06080F", background: appSending ? "rgba(208,171,96,0.45)" : "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.2em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: appSending ? "wait" : "pointer" }}>{appSending ? t.application.sendingBtn : t.application.submitBtn}</button>
                 </form>
               </div>
             )}
