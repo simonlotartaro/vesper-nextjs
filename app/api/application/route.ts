@@ -103,7 +103,7 @@ export async function POST(req: Request) {
   dbg("POST /api/application");
 
   const ip = clientIp(req);
-  const limit = rateLimit(`application:${ip}`, 5, 10 * 60 * 1000);
+  const limit = await rateLimit(`application:${ip}`, 5, 10 * 60 * 1000);
   if (!limit.ok) {
     console.warn(`[application] rate limited ${ip}`);
     return NextResponse.json(

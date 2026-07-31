@@ -33,7 +33,7 @@ const esc = (s: string) =>
 export async function POST(req: Request) {
   const ip = clientIp(req);
 
-  const limit = rateLimit(`contact:${ip}`, RATE_LIMIT, RATE_WINDOW_MS);
+  const limit = await rateLimit(`contact:${ip}`, RATE_LIMIT, RATE_WINDOW_MS);
   if (!limit.ok) {
     console.warn(`[contact] rate limited ${ip}`);
     return NextResponse.json(
