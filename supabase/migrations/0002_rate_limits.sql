@@ -9,12 +9,24 @@ create table if not exists public.rate_limits (
   reset_at  timestamptz not null
 );
 
+create index if not exists rate_limits_reset_at_idx on public.rate_limits (reset_at);
+
+-- RLS on, no policies: the table is unreachable for everyone except the
+-- service role, which bypasses RLS by design.
 alter table public.rate_limits enable row level security;
--- No policies: only the service role (the API routes) can touch it.
+
+-- Belt and braces: even the grant layer says no.
+revoke all on table public.rate_limits from anon;
+revoke all on table public.rate_limits from authenticated;
 
 -- Atomically count one hit and report whether it is still under the limit.
 -- Doing it in a single statement means two concurrent requests cannot both
 -- read a stale count — which is the whole point of moving this out of memory.
+--
+-- SECURITY INVOKER (the default, stated explicitly): the function runs with
+-- the caller's privileges. The API routes call it with the service role, which
+-- already has everything it needs, so there is nothing to elevate. Were anon
+-- ever able to reach it, RLS would still block the write.
 create or replace function public.hit_rate_limit(
   p_key            text,
   p_limit          integer,
@@ -22,7 +34,7 @@ create or replace function public.hit_rate_limit(
 )
 returns table (allowed boolean, retry_after integer)
 language plpgsql
-security definer
+security invoker
 set search_path = public
 as $$
 declare
@@ -43,5 +55,10 @@ begin
 end;
 $$;
 
--- Housekeeping: expired rows are harmless but there is no reason to keep them.
-create index if not exists rate_limits_reset_at_idx on public.rate_limits (reset_at);
+-- Postgres grants EXECUTE to PUBLIC on new functions by default. Take it back
+-- and hand it only to the service role, so the RPC is not callable from the
+-- browser with the anon key.
+revoke all on function public.hit_rate_limit(text, integer, integer) from public;
+revoke all on function public.hit_rate_limit(text, integer, integer) from anon;
+revoke all on function public.hit_rate_limit(text, integer, integer) from authenticated;
+grant execute on function public.hit_rate_limit(text, integer, integer) to service_role;
