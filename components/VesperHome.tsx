@@ -51,7 +51,10 @@ const T = {
       desc: "For general inquiries, membership questions or partnership opportunities, reach out directly or use the form.",
       emailLabel: "Email", nameLabel: "Full Name", namePlaceholder: "Full name",
       emailPlaceholder: "you@email.com", telLabel: "Telephone", telPlaceholder: "+1 000 000 0000",
-      msgLabel: "Message", msgPlaceholder: "Your message.", robotLabel: "I'm not a robot",
+      msgLabel: "Message", msgPlaceholder: "Your message.",
+      sendingBtn: "Sending…",
+      errorMsg: "We could not send your message. Please try again or write to info@vesperevent.com.",
+      rateMsg: "Too many attempts. Please wait a few minutes before trying again.",
       submitBtn: "Submit", successTitle: "Message received.", successMsg: "We will be in touch.", closeBtn: "Close",
     },
     members: {
@@ -140,7 +143,10 @@ const T = {
       desc: "Para consultas generales, preguntas sobre membresía u oportunidades de colaboración, contáctanos directamente o usá el formulario.",
       emailLabel: "Email", nameLabel: "Nombre Completo", namePlaceholder: "Nombre completo",
       emailPlaceholder: "tu@email.com", telLabel: "Teléfono", telPlaceholder: "+54 000 000 0000",
-      msgLabel: "Mensaje", msgPlaceholder: "Tu mensaje.", robotLabel: "No soy un robot",
+      msgLabel: "Mensaje", msgPlaceholder: "Tu mensaje.",
+      sendingBtn: "Enviando…",
+      errorMsg: "No pudimos enviar tu mensaje. Intentá de nuevo o escribinos a info@vesperevent.com.",
+      rateMsg: "Demasiados intentos. Esperá unos minutos antes de volver a intentar.",
       submitBtn: "Enviar", successTitle: "Mensaje recibido.", successMsg: "Nos pondremos en contacto.", closeBtn: "Cerrar",
     },
     members: {
@@ -229,7 +235,10 @@ const T = {
       desc: "Pour toute demande générale, question d'adhésion ou opportunité de partenariat, contactez-nous directement ou utilisez le formulaire.",
       emailLabel: "Email", nameLabel: "Nom Complet", namePlaceholder: "Nom complet",
       emailPlaceholder: "vous@email.com", telLabel: "Téléphone", telPlaceholder: "+33 0 00 00 00 00",
-      msgLabel: "Message", msgPlaceholder: "Votre message.", robotLabel: "Je ne suis pas un robot",
+      msgLabel: "Message", msgPlaceholder: "Votre message.",
+      sendingBtn: "Envoi…",
+      errorMsg: "Nous n'avons pas pu envoyer votre message. Réessayez ou écrivez à info@vesperevent.com.",
+      rateMsg: "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
       submitBtn: "Envoyer", successTitle: "Message reçu.", successMsg: "Nous vous recontacterons.", closeBtn: "Fermer",
     },
     members: {
@@ -316,7 +325,9 @@ export default function VesperHome() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
-  const [robotChecked, setRobotChecked] = useState(false);
+  const [contactSending, setContactSending] = useState(false);
+  const [contactError, setContactError] = useState<string | null>(null);
+  const contactOpenedAt = useRef(0);
   const [membersOpen, setMembersOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [eventOpen, setEventOpen] = useState(false);
@@ -361,6 +372,37 @@ export default function VesperHome() {
 
   const openModal = () => { setModalOpen(true); setSubmitted(false); setAppError(false); };
   const closeModal = () => setModalOpen(false);
+
+  const openContact = () => {
+    setContactSubmitted(false);
+    setContactError(null);
+    contactOpenedAt.current = Date.now();   // anti-spam: how long the form was open
+    setContactOpen(true);
+  };
+
+  const submitContact = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (contactSending) return;
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+    setContactSending(true);
+    setContactError(null);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, ts: contactOpenedAt.current }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload?.error || "send_failed");
+      }
+      setContactSubmitted(true);
+    } catch (err) {
+      setContactError(err instanceof Error ? err.message : "send_failed");
+    } finally {
+      setContactSending(false);
+    }
+  };
 
   const submitApplication = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -437,7 +479,7 @@ export default function VesperHome() {
                 >
                   <div style={{ position: "absolute", bottom: "9vh", left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, pointerEvents: "auto" }}>
                     <span style={{ width: 28, height: 1, background: "rgba(198,162,88,0.7)" }} />
-                    <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{t.menu[navKey(col.nav)]}</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { openContact(); } if (col.nav === "Members") { setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .6s ease" }}>{t.menu[navKey(col.nav)]}</a>
                   </div>
                 </div>
               );
@@ -477,7 +519,7 @@ export default function VesperHome() {
                   style={{ position: "relative", flex: 1, minHeight: 118, overflow: "hidden", borderTop: "1px solid rgba(198,162,88,0.18)", cursor: "pointer" }}
                 >
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 26px" }}>
-                    <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } if (col.nav === "Members") { setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease" }}>{t.menu[navKey(col.nav)]}</a>
+                    <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (col.nav === "About") setAboutOpen(true); if (col.nav === "Contact") { openContact(); } if (col.nav === "Members") { setMembersOpen(true); } if (col.nav === "Application") { setEventOpen(true); } }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase", color: active ? "#C6A258" : "rgba(198,162,88,0.85)", textDecoration: "none", transition: "color .5s ease" }}>{t.menu[navKey(col.nav)]}</a>
                   </div>
                 </div>
               );
@@ -497,7 +539,7 @@ export default function VesperHome() {
                 { key: "home" as const,        action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setModalOpen(false); setEventOpen(false); setHovered(null); setMobileActive(null); window.scrollTo({ top: 0, behavior: "smooth" }); } },
                 { key: "about" as const,       action: () => { setMenuOpen(false); setEventOpen(false); setMembersOpen(false); setContactOpen(false); setAboutOpen(true); } },
                 { key: "application" as const, action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setEventOpen(true); } },
-                { key: "contact" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setMembersOpen(false); setContactSubmitted(false); setRobotChecked(false); setContactOpen(true); } },
+                { key: "contact" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setMembersOpen(false); openContact(); } },
                 { key: "members" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(true); } },
               ]).map((item) => (
                 <a key={item.key} href="#" onClick={(e) => { e.preventDefault(); item.action(); }}
@@ -597,21 +639,15 @@ export default function VesperHome() {
                   <button onClick={() => setContactOpen(false)} className="v-close" style={{ marginTop: 32, background: "transparent", border: "1px solid rgba(236,231,219,0.2)", color: "#ECE7DB", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", padding: "13px 30px", cursor: "pointer" }}>{t.contact.closeBtn}</button>
                 </div>
               ) : (
-                <form onSubmit={async (e) => { e.preventDefault(); if (!robotChecked) return; const f = e.currentTarget; const name = (f.elements.namedItem("name") as HTMLInputElement).value; const email = (f.elements.namedItem("email") as HTMLInputElement).value; const tel = (f.elements.namedItem("tel") as HTMLInputElement).value; const message = (f.elements.namedItem("message") as HTMLTextAreaElement).value; await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, tel, message }) }); setContactSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: 24, paddingTop: 8 }}>
+                <form onSubmit={submitContact} style={{ display: "flex", flexDirection: "column", gap: 24, paddingTop: 8 }}>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.nameLabel}</span><input required name="name" type="text" placeholder={t.contact.namePlaceholder} className="v-field" style={fieldStyle} /></label>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.emailLabel}</span><input required name="email" type="email" placeholder={t.contact.emailPlaceholder} className="v-field" style={fieldStyle} /></label>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.telLabel}</span><input name="tel" type="tel" placeholder={t.contact.telPlaceholder} className="v-field" style={fieldStyle} /></label>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.msgLabel}</span><textarea required name="message" rows={4} placeholder={t.contact.msgPlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
-                  <div style={{ display: "flex", alignItems: "center", gap: 14, border: "1px solid rgba(236,231,219,0.12)", padding: "14px 18px", background: "rgba(255,255,255,0.02)" }}>
-                    <div onClick={() => setRobotChecked(!robotChecked)} style={{ width: 22, height: 22, border: `2px solid ${robotChecked ? "#C6A258" : "rgba(236,231,219,0.3)"}`, background: robotChecked ? "rgba(198,162,88,0.15)" : "transparent", cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", transition: "all .25s ease" }}>
-                      {robotChecked && <span style={{ color: "#C6A258", fontSize: 13, lineHeight: 1 }}>✓</span>}
-                    </div>
-                    <span style={{ fontSize: 13, color: "#9b988e", letterSpacing: "0.04em" }}>{t.contact.robotLabel}</span>
-                    <div style={{ marginLeft: "auto", textAlign: "right" }}>
-                      <div style={{ fontSize: 9, letterSpacing: "0.1em", color: "#3a3830", textTransform: "uppercase", lineHeight: 1.4 }}>reCAPTCHA<br />Privacy · Terms</div>
-                    </div>
-                  </div>
-                  <button type="submit" className="v-submit" style={{ marginTop: 4, color: "#06080F", background: robotChecked ? "#D0AB60" : "rgba(208,171,96,0.3)", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: robotChecked ? "pointer" : "not-allowed", transition: "background .3s ease" }}>{t.contact.submitBtn}</button>
+                  {/* honeypot — off-screen, never announced, never focusable */}
+                  <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: -9999, width: 1, height: 1, opacity: 0 }} />
+                  {contactError && <div role="alert" style={{ fontSize: 13, lineHeight: 1.6, color: "#E0806A", border: "1px solid rgba(224,128,106,0.32)", background: "rgba(224,128,106,0.07)", padding: "12px 16px" }}>{contactError === "rate_limited" ? t.contact.rateMsg : t.contact.errorMsg}</div>}
+                  <button type="submit" disabled={contactSending} className="v-submit" style={{ marginTop: 4, color: "#06080F", background: contactSending ? "rgba(208,171,96,0.45)" : "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: contactSending ? "wait" : "pointer", transition: "background .3s ease" }}>{contactSending ? t.contact.sendingBtn : t.contact.submitBtn}</button>
                 </form>
               )}
             </div>

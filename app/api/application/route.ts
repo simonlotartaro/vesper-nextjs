@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 /**
  * "Request Access" submissions.
@@ -100,6 +101,16 @@ function buildEmail(d: Normalized, stored: boolean) {
 
 export async function POST(req: Request) {
   dbg("POST /api/application");
+
+  const ip = clientIp(req);
+  const limit = rateLimit(`application:${ip}`, 5, 10 * 60 * 1000);
+  if (!limit.ok) {
+    console.warn(`[application] rate limited ${ip}`);
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
 
   let body: Record<string, unknown>;
   try {
