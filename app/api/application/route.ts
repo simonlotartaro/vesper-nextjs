@@ -15,8 +15,12 @@ import { sendTracked, emailShell } from "@/lib/email";
  * The Resend key is read from the server env only — it never reaches the client.
  */
 
-/** Temporary diagnostic logging. Flip to false once the flow is confirmed. */
-const DEBUG = true;
+/**
+ * Diagnostic logging. Technical facts only — endpoint, record id, Resend id,
+ * status, error codes. Never applicant data: no names, emails, phones, notes,
+ * and never the request body.
+ */
+const DEBUG = false;
 
 const dbg = (...args: unknown[]) => { if (DEBUG) console.log("[application]", ...args); };
 
@@ -78,14 +82,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
-  dbg("body keys:", Object.keys(body));
-
   const data = normalize(body);
-  dbg("normalized:", data);
 
   // Never send on an incomplete identity.
   if (!data.name || !data.email) {
-    dbg("missing name or email → 400");
+    dbg("rejected: missing name or email");
     return NextResponse.json({ error: "missing_fields" }, { status: 400 });
   }
 

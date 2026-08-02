@@ -106,15 +106,20 @@ export async function POST(req: Request) {
     payload: event,
   });
 
+  let isRetry = false;
   if (logError) {
     // 23505 = unique_violation on svix_id: Resend is retrying a delivery we
-    // already processed. Anything else is a real failure and must be retried,
-    // so we answer 500 and let Resend send it again.
+    // logged before. That does NOT mean we finished with it — the status
+    // update may have failed last time, which is precisely why Resend is
+    // retrying. So carry on with this payload; the ordering guards below
+    // make a genuinely finished event a safe no-op.
     if (logError.code === "23505") {
-      return NextResponse.json({ ok: true, duplicate: true });
+      isRetry = true;
+    } else {
+      // Anything else is a real failure: answer 500 and let Resend resend.
+      console.error("[resend-webhook] email_events insert failed:", logError.message);
+      return NextResponse.json({ error: "log_failed" }, { status: 500 });
     }
-    console.error("[resend-webhook] email_events insert failed:", logError.message);
-    return NextResponse.json({ error: "log_failed" }, { status: 500 });
   }
 
   // ── 2. Only the primary recipient moves a request's status ──────────
@@ -189,6 +194,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "update_failed" }, { status: 500 });
   }
 
-  console.log(`[resend-webhook] ${event.type} → ${table}/${row.id} (${status})`);
-  return NextResponse.json({ ok: true });
+  console.log(`[resend-webhook] ${event.type} → ${table}/${row.id} (${status})${isRetry ? " [retry]" : ""}`);
+  return NextResponse.json({ ok: true, retry: isRetry });
 }
