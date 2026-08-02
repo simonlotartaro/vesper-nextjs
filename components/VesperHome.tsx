@@ -54,7 +54,9 @@ const T = {
       msgLabel: "Message", msgPlaceholder: "Your message.",
       sendingBtn: "Sending…",
       errorMsg: "We could not send your message. Please try again or write to info@vesperevent.com.",
-      rateMsg: "Too many attempts. Please wait a few minutes before trying again.",
+      rateMsg: "Too many attempts. Please wait a few minutes and try again.",
+      rateMsgIn: "Too many attempts. Please wait about {n} min and try again.",
+      pendingMsg: "Message received, we are processing it.",
       submitBtn: "Submit", successTitle: "Message received.", successMsg: "We will be in touch.", closeBtn: "Close",
     },
     members: {
@@ -79,6 +81,9 @@ const T = {
       interestedOptions: ["Select", "Madrid GP 2026", "Partnership", "Membership", "Private Table", "General Access"],
       noteLabel: "Short Note", notePlaceholder: "Tell us, briefly.", submitBtn: "Submit Request",
       sendingBtn: "Sending…", errorMsg: "We could not send your request. Please try again or write to info@vesperevent.com.",
+      rateMsg: "Too many attempts. Please wait a few minutes and try again.",
+      rateMsgIn: "Too many attempts. Please wait about {n} min and try again.",
+      pendingMsg: "Request received, we are processing it.",
       successTitle: "Request received.", successMsg: "If aligned, we will be in touch.", closeBtn: "Close",
     },
     event: {
@@ -146,7 +151,9 @@ const T = {
       msgLabel: "Mensaje", msgPlaceholder: "Tu mensaje.",
       sendingBtn: "Enviando…",
       errorMsg: "No pudimos enviar tu mensaje. Intentá de nuevo o escribinos a info@vesperevent.com.",
-      rateMsg: "Demasiados intentos. Esperá unos minutos antes de volver a intentar.",
+      rateMsg: "Demasiados intentos. Esperá unos minutos y volvé a intentarlo.",
+      rateMsgIn: "Demasiados intentos. Esperá unos {n} min y volvé a intentarlo.",
+      pendingMsg: "Mensaje recibido, estamos procesándolo.",
       submitBtn: "Enviar", successTitle: "Mensaje recibido.", successMsg: "Nos pondremos en contacto.", closeBtn: "Cerrar",
     },
     members: {
@@ -171,6 +178,9 @@ const T = {
       interestedOptions: ["Seleccionar", "Madrid GP 2026", "Alianza", "Membresía", "Mesa Privada", "Acceso General"],
       noteLabel: "Nota Breve", notePlaceholder: "Contanos, brevemente.", submitBtn: "Enviar Solicitud",
       sendingBtn: "Enviando…", errorMsg: "No pudimos enviar tu solicitud. Intentá de nuevo o escribinos a info@vesperevent.com.",
+      rateMsg: "Demasiados intentos. Esperá unos minutos y volvé a intentarlo.",
+      rateMsgIn: "Demasiados intentos. Esperá unos {n} min y volvé a intentarlo.",
+      pendingMsg: "Solicitud recibida, estamos procesándola.",
       successTitle: "Solicitud recibida.", successMsg: "Si hay afinidad, estaremos en contacto.", closeBtn: "Cerrar",
     },
     event: {
@@ -238,7 +248,9 @@ const T = {
       msgLabel: "Message", msgPlaceholder: "Votre message.",
       sendingBtn: "Envoi…",
       errorMsg: "Nous n'avons pas pu envoyer votre message. Réessayez ou écrivez à info@vesperevent.com.",
-      rateMsg: "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
+      rateMsg: "Trop de tentatives. Patientez quelques minutes et réessayez.",
+      rateMsgIn: "Trop de tentatives. Patientez environ {n} min et réessayez.",
+      pendingMsg: "Message reçu, nous le traitons.",
       submitBtn: "Envoyer", successTitle: "Message reçu.", successMsg: "Nous vous recontacterons.", closeBtn: "Fermer",
     },
     members: {
@@ -263,6 +275,9 @@ const T = {
       interestedOptions: ["Sélectionner", "Madrid GP 2026", "Partenariat", "Adhésion", "Table Privée", "Accès Général"],
       noteLabel: "Note Brève", notePlaceholder: "Dites-nous, brièvement.", submitBtn: "Soumettre la demande",
       sendingBtn: "Envoi…", errorMsg: "Nous n'avons pas pu envoyer votre demande. Réessayez ou écrivez à info@vesperevent.com.",
+      rateMsg: "Trop de tentatives. Patientez quelques minutes et réessayez.",
+      rateMsgIn: "Trop de tentatives. Patientez environ {n} min et réessayez.",
+      pendingMsg: "Demande reçue, nous la traitons.",
       successTitle: "Demande reçue.", successMsg: "Si votre profil correspond, nous prendrons contact.", closeBtn: "Fermer",
     },
     event: {
@@ -321,12 +336,14 @@ export default function VesperHome() {
   const [modalOpen, setModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [appSending, setAppSending] = useState(false);
-  const [appError, setAppError] = useState(false);
+  const [appError, setAppError] = useState<string | null>(null);
+  const [appPending, setAppPending] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [contactSending, setContactSending] = useState(false);
   const [contactError, setContactError] = useState<string | null>(null);
+  const [contactPending, setContactPending] = useState(false);
   const contactOpenedAt = useRef(0);
   const [membersOpen, setMembersOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -370,14 +387,41 @@ export default function VesperHome() {
     return () => window.removeEventListener("popstate", handlePop);
   }, []);
 
-  const openModal = () => { setModalOpen(true); setSubmitted(false); setAppError(false); };
+  const openModal = () => { setModalOpen(true); setSubmitted(false); setAppError(null); setAppPending(false); };
+
+  /** Rate-limit messages carry the wait in minutes when the server sent one. */
+  const errorText = (code: string | null, msgs: { errorMsg: string; rateMsg: string; rateMsgIn: string }) => {
+    if (!code) return "";
+    if (code === "rate_limited") return msgs.rateMsg;
+    if (code.startsWith("rate_limited:")) return msgs.rateMsgIn.replace("{n}", code.split(":")[1]);
+    return msgs.errorMsg;
+  };
   const closeModal = () => setModalOpen(false);
 
   const openContact = () => {
     setContactSubmitted(false);
     setContactError(null);
+    setContactPending(false);
     contactOpenedAt.current = Date.now();   // anti-spam: how long the form was open
     setContactOpen(true);
+  };
+
+  /**
+   * 200 → accepted and sent · 202 → accepted, delivery still resolving
+   * 429 → rate limited, shown as its own message · anything else → retryable
+   */
+  const readResponse = async (res: Response) => {
+    if (res.status === 429) {
+      const retry = Number(res.headers.get("Retry-After"));
+      throw new Error(
+        Number.isFinite(retry) && retry > 0 ? `rate_limited:${Math.ceil(retry / 60)}` : "rate_limited"
+      );
+    }
+    if (!res.ok) {
+      const payload = await res.json().catch(() => ({}));
+      throw new Error(payload?.error || "send_failed");
+    }
+    return res.status === 202;
   };
 
   const submitContact = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -392,10 +436,7 @@ export default function VesperHome() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, ts: contactOpenedAt.current }),
       });
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload?.error || "send_failed");
-      }
+      setContactPending(await readResponse(res));
       setContactSubmitted(true);
     } catch (err) {
       setContactError(err instanceof Error ? err.message : "send_failed");
@@ -409,17 +450,17 @@ export default function VesperHome() {
     if (appSending) return;
     const data = Object.fromEntries(new FormData(e.currentTarget).entries());
     setAppSending(true);
-    setAppError(false);
+    setAppError(null);
     try {
       const res = await fetch("/api/application", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, lang }),
       });
-      if (!res.ok) throw new Error("send_failed");
+      setAppPending(await readResponse(res));
       setSubmitted(true);
-    } catch {
-      setAppError(true);
+    } catch (err) {
+      setAppError(err instanceof Error ? err.message : "send_failed");
     } finally {
       setAppSending(false);
     }
@@ -572,7 +613,7 @@ export default function VesperHome() {
             {submitted ? (
               <div style={{ textAlign: "center", padding: "30px 6px" }}>
                 <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 40, color: "#C6A258", marginBottom: 18 }}>{t.application.successTitle}</div>
-                <p style={{ fontSize: 15, lineHeight: 1.7, color: "#bdb9af", fontWeight: 300, margin: "0 auto", maxWidth: 360 }}>{t.application.successMsg}</p>
+                <p style={{ fontSize: 15, lineHeight: 1.7, color: "#bdb9af", fontWeight: 300, margin: "0 auto", maxWidth: 360 }}>{appPending ? t.application.pendingMsg : t.application.successMsg}</p>
                 <button onClick={closeModal} className="v-close" style={{ marginTop: 34, background: "transparent", border: "1px solid rgba(236,231,219,0.2)", color: "#ECE7DB", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", padding: "13px 30px", cursor: "pointer" }}>{t.application.closeBtn}</button>
               </div>
             ) : (
@@ -597,7 +638,7 @@ export default function VesperHome() {
                     </label>
                   </div>
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.application.noteLabel}</span><textarea name="note" rows={3} placeholder={t.application.notePlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
-                  {appError && <div role="alert" style={{ fontSize: 13, lineHeight: 1.6, color: "#E0806A", border: "1px solid rgba(224,128,106,0.32)", background: "rgba(224,128,106,0.07)", padding: "12px 16px" }}>{t.application.errorMsg}</div>}
+                  {appError && <div role="alert" style={{ fontSize: 13, lineHeight: 1.6, color: "#E0806A", border: "1px solid rgba(224,128,106,0.32)", background: "rgba(224,128,106,0.07)", padding: "12px 16px" }}>{errorText(appError, t.application)}</div>}
                   <button type="submit" disabled={appSending} className="v-submit" style={{ marginTop: 8, color: "#06080F", background: appSending ? "rgba(208,171,96,0.45)" : "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.2em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: appSending ? "wait" : "pointer" }}>{appSending ? t.application.sendingBtn : t.application.submitBtn}</button>
                 </form>
               </div>
@@ -635,7 +676,7 @@ export default function VesperHome() {
               {contactSubmitted ? (
                 <div style={{ paddingTop: 60, textAlign: "center" }}>
                   <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 38, color: "#C6A258", marginBottom: 18 }}>{t.contact.successTitle}</div>
-                  <p style={{ fontSize: 15, color: "#bdb9af", fontWeight: 300, lineHeight: 1.7 }}>{t.contact.successMsg}</p>
+                  <p style={{ fontSize: 15, color: "#bdb9af", fontWeight: 300, lineHeight: 1.7 }}>{contactPending ? t.contact.pendingMsg : t.contact.successMsg}</p>
                   <button onClick={() => setContactOpen(false)} className="v-close" style={{ marginTop: 32, background: "transparent", border: "1px solid rgba(236,231,219,0.2)", color: "#ECE7DB", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", padding: "13px 30px", cursor: "pointer" }}>{t.contact.closeBtn}</button>
                 </div>
               ) : (
@@ -646,7 +687,7 @@ export default function VesperHome() {
                   <label style={{ display: "flex", flexDirection: "column", gap: 9 }}><span style={fieldLabel}>{t.contact.msgLabel}</span><textarea required name="message" rows={4} placeholder={t.contact.msgPlaceholder} className="v-field" style={{ ...fieldStyle, resize: "none" }} /></label>
                   {/* honeypot — off-screen, never announced, never focusable */}
                   <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: -9999, width: 1, height: 1, opacity: 0 }} />
-                  {contactError && <div role="alert" style={{ fontSize: 13, lineHeight: 1.6, color: "#E0806A", border: "1px solid rgba(224,128,106,0.32)", background: "rgba(224,128,106,0.07)", padding: "12px 16px" }}>{contactError === "rate_limited" ? t.contact.rateMsg : t.contact.errorMsg}</div>}
+                  {contactError && <div role="alert" style={{ fontSize: 13, lineHeight: 1.6, color: "#E0806A", border: "1px solid rgba(224,128,106,0.32)", background: "rgba(224,128,106,0.07)", padding: "12px 16px" }}>{errorText(contactError, t.contact)}</div>}
                   <button type="submit" disabled={contactSending} className="v-submit" style={{ marginTop: 4, color: "#06080F", background: contactSending ? "rgba(208,171,96,0.45)" : "#D0AB60", border: "none", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", padding: "16px 30px", fontWeight: 600, cursor: contactSending ? "wait" : "pointer", transition: "background .3s ease" }}>{contactSending ? t.contact.sendingBtn : t.contact.submitBtn}</button>
                 </form>
               )}

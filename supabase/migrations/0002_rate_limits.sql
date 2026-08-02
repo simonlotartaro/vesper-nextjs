@@ -2,6 +2,11 @@
 -- Run once in the Supabase SQL editor (Dashboard → SQL Editor → New query).
 -- Safe to run more than once. Creates one new table and one function.
 -- Touches no existing table.
+--
+-- Wrapped in a transaction: either the table, the function and every grant
+-- land together, or nothing does. No half-applied migration.
+
+begin;
 
 create table if not exists public.rate_limits (
   key       text primary key,
@@ -15,9 +20,14 @@ create index if not exists rate_limits_reset_at_idx on public.rate_limits (reset
 -- service role, which bypasses RLS by design.
 alter table public.rate_limits enable row level security;
 
--- Belt and braces: even the grant layer says no.
+-- Belt and braces: even the grant layer says no. Start from nothing…
+revoke all on table public.rate_limits from public;
 revoke all on table public.rate_limits from anon;
 revoke all on table public.rate_limits from authenticated;
+
+-- …then hand the service role exactly what the function needs and no more.
+-- No delete: nothing in this codebase removes rows from here.
+grant select, insert, update on table public.rate_limits to service_role;
 
 -- Atomically count one hit and report whether it is still under the limit.
 -- Doing it in a single statement means two concurrent requests cannot both
@@ -62,3 +72,5 @@ revoke all on function public.hit_rate_limit(text, integer, integer) from public
 revoke all on function public.hit_rate_limit(text, integer, integer) from anon;
 revoke all on function public.hit_rate_limit(text, integer, integer) from authenticated;
 grant execute on function public.hit_rate_limit(text, integer, integer) to service_role;
+
+commit;

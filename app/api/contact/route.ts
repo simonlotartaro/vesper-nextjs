@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { sendTracked, emailShell } from "@/lib/email";
 
 /**
  * Contact form.
@@ -13,10 +15,7 @@ import { rateLimit, clientIp } from "@/lib/rate-limit";
  * Both are anti-spam signals, never shown to the user and never emailed.
  */
 
-const DEST = "info@vesperevent.com";
-const FROM = "Vesper <info@vesperevent.com>";
-
-const RATE_LIMIT = 5;
+const RATE_LIMIT = 10;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const MIN_FILL_MS = 3_000;      // nobody types a message in under 3 seconds
 const MAX_FORM_AGE_MS = 3 * 60 * 60 * 1000;
@@ -26,9 +25,6 @@ const clean = (v: unknown, max: number) =>
 
 /** Deliberately permissive: shape check only, so no real address is refused. */
 const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-
-const esc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export async function POST(req: Request) {
   const ip = clientIp(req);
@@ -81,39 +77,77 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "not_configured" }, { status: 500 });
   }
 
-  // ── send ──────────────────────────────────────────────────────────────
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const supabase = createAdminClient();
 
-  const { data: sent, error } = await resend.emails.send({
-    from: FROM,              // never the sender — it would fail DMARC
-    to: DEST,
-    replyTo: email,          // replying goes straight to the person
+  // ── 1. Persist ────────────────────────────────────────────────────────
+  // Same policy as the application form: a DB failure never swallows the
+  // message. Without a row there is no tracking, and the email says so.
+  let recordId: string | null = null;
+  try {
+    const { data: inserted, error } = await supabase
+      .from("contact_messages")
+      .insert({ name, email, tel: tel || null, message })
+      .select("id")
+      .single();
+    if (error) console.error("[contact] supabase insert failed:", error.message);
+    else recordId = inserted.id;
+  } catch (err) {
+    console.error("[contact] supabase insert threw:", err instanceof Error ? err.message : err);
+  }
+
+  // ── 2. Notify ─────────────────────────────────────────────────────────
+  const rows: [string, string][] = [
+    ["Nombre", name],
+    ["Email", email],
+    ["Teléfono", tel || "—"],
+  ];
+  const warning = recordId
+    ? undefined
+    : "⚠ Este mensaje NO pudo guardarse en la base de datos. Conservá este email.";
+
+  const content = {
+    replyTo: email,
     subject: `Nuevo mensaje de contacto — ${name}`,
-    text: `Nombre: ${name}\nEmail: ${email}\nTeléfono: ${tel || "—"}\n\nMensaje:\n${message}`,
-    html: `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:560px;color:#1a1a1a">
-  <p style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8a7340;margin:0 0 18px">
-    Vesper · Nuevo mensaje de contacto
-  </p>
-  <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:14px">
-    ${([["Nombre", name], ["Email", email], ["Teléfono", tel || "—"]] as [string, string][])
-      .map(([k, v]) => `
-    <tr>
-      <td style="padding:9px 0;border-bottom:1px solid #eceae4;color:#77736b;width:180px;vertical-align:top">${esc(k)}</td>
-      <td style="padding:9px 0;border-bottom:1px solid #eceae4;vertical-align:top">${esc(v)}</td>
-    </tr>`).join("")}
-  </table>
-  <p style="font-size:12px;color:#77736b;margin:24px 0 6px">Mensaje</p>
-  <p style="font-size:14px;line-height:1.6;white-space:pre-line;margin:0">${esc(message)}</p>
-</div>`.trim(),
-  });
+    text:
+      `Nombre: ${name}\nEmail: ${email}\nTeléfono: ${tel || "—"}\n\nMensaje:\n${message}\n` +
+      (warning ? `\n${warning}\n` : ""),
+    html: emailShell("Vesper · Nuevo mensaje de contacto", rows, "Mensaje", message, warning),
+  };
 
-  if (error) {
-    // Logged in full server-side; the client only learns that it failed.
-    console.error("[contact] resend error:", error);
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const outcome = await sendTracked(
+    resend,
+    "contact",
+    recordId ?? crypto.randomUUID(),
+    content
+  );
+
+  // ── 3. Record the outcome ─────────────────────────────────────────────
+  if (recordId) {
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from("contact_messages")
+      .update({
+        resend_email_id: outcome.status === "sent" ? outcome.emailId : null,
+        email_status: outcome.status,
+        email_sent_at: outcome.status === "sent" ? now : null,
+        email_error: outcome.status === "sent" ? null : outcome.error,
+        email_status_updated_at: now,
+      })
+      .eq("id", recordId);
+    if (error) console.error("[contact] status update failed:", error.message);
+  }
+
+  if (outcome.status === "send_failed") {
+    console.error("[contact] send failed:", outcome.error);
     return NextResponse.json({ error: "send_failed" }, { status: 500 });
   }
 
-  console.log("[contact] sent, id:", sent?.id);
+  if (outcome.status === "send_pending") {
+    console.warn("[contact] send pending:", outcome.error);
+    return NextResponse.json({ ok: true, pending: true }, { status: 202 });
+  }
+
+  console.log("[contact] sent, id:", outcome.emailId);
   return NextResponse.json({ ok: true });
 }

@@ -2,6 +2,7 @@ import { Resend } from "resend";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { sendTracked, emailShell } from "@/lib/email";
 
 /**
  * "Request Access" submissions.
@@ -10,12 +11,9 @@ import { rateLimit, clientIp } from "@/lib/rate-limit";
  *   JSON body, never FormData.
  *   { name, email, city, role, referred, interested, note, lang }
  *
- * One email to info@vesperevent.com, one row in public.access_requests.
+ * Row in public.access_requests, one email to info@vesperevent.com.
  * The Resend key is read from the server env only — it never reaches the client.
  */
-
-const DEST = "info@vesperevent.com";
-const FROM = "Vesper <info@vesperevent.com>";
 
 /** Temporary diagnostic logging. Flip to false once the flow is confirmed. */
 const DEBUG = true;
@@ -59,46 +57,6 @@ function normalize(body: Record<string, unknown>): Normalized {
 /** Optional fields render as an em dash — never as invented content. */
 const or = (v: string) => v || "—";
 
-const esc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-function buildEmail(d: Normalized, stored: boolean) {
-  const rows: [string, string][] = [
-    ["Nombre", d.name],
-    ["Email", d.email],
-    ["Ciudad", or(d.city)],
-    ["Rol / profesión", or(d.role)],
-    ["Referido por", or(d.referred)],
-    ["Interesado en", or(d.interested)],
-    ["Idioma del formulario", or(d.lang)],
-  ];
-
-  const warning = stored ? "" : "\n⚠ Esta solicitud NO pudo guardarse en la base de datos. Conservá este email.\n";
-
-  const text =
-    rows.map(([k, v]) => `${k}: ${v}`).join("\n") +
-    `\n\nNota:\n${or(d.note)}\n` + warning;
-
-  const html = `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:560px;color:#1a1a1a">
-  <p style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8a7340;margin:0 0 18px">
-    Vesper · Nueva solicitud de acceso
-  </p>
-  <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:14px">
-    ${rows.map(([k, v]) => `
-    <tr>
-      <td style="padding:9px 0;border-bottom:1px solid #eceae4;color:#77736b;width:180px;vertical-align:top">${esc(k)}</td>
-      <td style="padding:9px 0;border-bottom:1px solid #eceae4;vertical-align:top">${esc(v)}</td>
-    </tr>`).join("")}
-  </table>
-  <p style="font-size:12px;color:#77736b;margin:24px 0 6px">Nota</p>
-  <p style="font-size:14px;line-height:1.6;white-space:pre-line;margin:0">${esc(or(d.note))}</p>
-  ${stored ? "" : `<p style="margin:22px 0 0;padding:12px 14px;background:#fdf3f0;border:1px solid #e8c4b8;font-size:13px;color:#93412a">⚠ Esta solicitud no pudo guardarse en la base de datos. Conservá este email.</p>`}
-</div>`.trim();
-
-  return { text, html };
-}
-
 export async function POST(req: Request) {
   dbg("POST /api/application");
 
@@ -131,25 +89,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "missing_fields" }, { status: 400 });
   }
 
+  const supabase = createAdminClient();
+
   // ── 1. Persist ────────────────────────────────────────────────────────
   // A DB failure must NOT swallow the request: the email is the channel the
   // team actually reads, so we log the failure, flag it inside the email and
-  // keep going. Only a failed email is treated as a failed submission.
-  let stored = false;
+  // keep going — without a row id there is simply no tracking.
+  let recordId: string | null = null;
   try {
-    const supabase = createAdminClient();
-    const { error } = await supabase.from("access_requests").insert({
-      name: data.name,
-      email: data.email,
-      city: data.city || null,
-      role: data.role || null,
-      referred: data.referred || null,
-      interested: data.interested || null,
-      note: data.note || null,
-      lang: data.lang || null,
-    });
+    const { data: inserted, error } = await supabase
+      .from("access_requests")
+      .insert({
+        name: data.name,
+        email: data.email,
+        city: data.city || null,
+        role: data.role || null,
+        referred: data.referred || null,
+        interested: data.interested || null,
+        note: data.note || null,
+        lang: data.lang || null,
+      })
+      .select("id")
+      .single();
+
     if (error) console.error("[application] supabase insert failed:", error.message);
-    else { stored = true; dbg("row inserted in access_requests"); }
+    else { recordId = inserted.id; dbg("row inserted:", recordId); }
   } catch (err) {
     console.error("[application] supabase insert threw:", err instanceof Error ? err.message : err);
   }
@@ -157,26 +121,67 @@ export async function POST(req: Request) {
   // ── 2. Notify ─────────────────────────────────────────────────────────
   if (!process.env.RESEND_API_KEY) {
     console.error("[application] RESEND_API_KEY is not set");
-    return NextResponse.json({ error: "not_configured", stored }, { status: 500 });
+    return NextResponse.json({ error: "not_configured", stored: !!recordId }, { status: 500 });
   }
 
-  const { text, html } = buildEmail(data, stored);
+  const rows: [string, string][] = [
+    ["Nombre", data.name],
+    ["Email", data.email],
+    ["Ciudad", or(data.city)],
+    ["Rol / profesión", or(data.role)],
+    ["Referido por", or(data.referred)],
+    ["Interesado en", or(data.interested)],
+    ["Idioma del formulario", or(data.lang)],
+  ];
+  const warning = recordId
+    ? undefined
+    : "⚠ Esta solicitud NO pudo guardarse en la base de datos. Conservá este email.";
+
+  const content = {
+    replyTo: data.email,
+    subject: `Nueva solicitud de acceso — ${data.name}`,
+    text:
+      rows.map(([k, v]) => `${k}: ${v}`).join("\n") +
+      `\n\nNota:\n${or(data.note)}\n` + (warning ? `\n${warning}\n` : ""),
+    html: emailShell("Vesper · Nueva solicitud de acceso", rows, "Nota", or(data.note), warning),
+  };
+
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const { data: sent, error } = await resend.emails.send({
-    from: FROM,                    // never the applicant — it would fail DMARC
-    to: DEST,
-    replyTo: data.email,           // replying goes straight to the applicant
-    subject: `Nueva solicitud de acceso — ${data.name}`,
-    text,
-    html,
-  });
+  // Without a row there is nothing to key idempotency to and nothing to track.
+  const outcome = recordId
+    ? await sendTracked(resend, "request_access", recordId, content)
+    : await sendTracked(resend, "request_access", crypto.randomUUID(), content);
 
-  if (error) {
-    console.error("[application] resend error:", error);
-    return NextResponse.json({ error: "send_failed", stored }, { status: 500 });
+  // ── 3. Record the outcome ─────────────────────────────────────────────
+  if (recordId) {
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from("access_requests")
+      .update({
+        resend_email_id: outcome.status === "sent" ? outcome.emailId : null,
+        email_status: outcome.status,
+        email_sent_at: outcome.status === "sent" ? now : null,
+        email_error: outcome.status === "sent" ? null : outcome.error,
+        email_status_updated_at: now,
+      })
+      .eq("id", recordId);
+    if (error) console.error("[application] status update failed:", error.message);
   }
 
-  dbg("resend ok, id:", sent?.id, "| stored:", stored);
-  return NextResponse.json({ ok: true, stored });
+  if (outcome.status === "send_failed") {
+    console.error("[application] send failed:", outcome.error);
+    return NextResponse.json({ error: "send_failed", stored: !!recordId }, { status: 500 });
+  }
+
+  if (outcome.status === "send_pending") {
+    // The first attempt may well have gone through. Telling the user to try
+    // again is what would create a second row, a second key and a duplicate
+    // email — so this is an accepted submission, not an error.
+    console.warn("[application] send pending:", outcome.error);
+    return NextResponse.json({ ok: true, pending: true, stored: !!recordId }, { status: 202 });
+  }
+
+  dbg("resend ok, id:", outcome.emailId, "| stored:", !!recordId);
+  return NextResponse.json({ ok: true, stored: !!recordId });
 }
