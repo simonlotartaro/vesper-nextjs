@@ -398,6 +398,25 @@ export default function VesperHome() {
   };
   const closeModal = () => setModalOpen(false);
 
+  /**
+   * Fire-and-forget click on the @Vesper link. Deliberately not awaited and
+   * never preventDefault'd: the browser opens Instagram through the anchor
+   * itself, so a failed or missing beacon costs nothing. Sends page_path and
+   * nothing else — event_name and placement are fixed on the server.
+   */
+  const trackInstagramClick = () => {
+    try {
+      if (typeof navigator === "undefined" || !navigator.sendBeacon) return;
+      const body = new Blob(
+        [JSON.stringify({ page_path: window.location.pathname.slice(0, 300) })],
+        { type: "application/json" }
+      );
+      navigator.sendBeacon("/api/analytics/instagram-outbound", body);
+    } catch {
+      // Navigation must never depend on analytics.
+    }
+  };
+
   const openContact = () => {
     setContactSubmitted(false);
     setContactError(null);
@@ -599,7 +618,7 @@ export default function VesperHome() {
               </div>
               <div>
                 <div style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "#56544c", marginBottom: 7 }}>Instagram</div>
-                <a href="https://instagram.com/vesper" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#9b988e", textDecoration: "none", letterSpacing: "0.04em", transition: "color .3s ease" }} onMouseEnter={(e) => (e.currentTarget.style.color = "#C6A258")} onMouseLeave={(e) => (e.currentTarget.style.color = "#9b988e")}>@Vesper</a>
+                <a href="https://www.instagram.com/vesper_event/" target="_blank" rel="noopener noreferrer" onClick={trackInstagramClick} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#9b988e", textDecoration: "none", letterSpacing: "0.04em", transition: "color .3s ease" }} onMouseEnter={(e) => (e.currentTarget.style.color = "#C6A258")} onMouseLeave={(e) => (e.currentTarget.style.color = "#9b988e")}>@Vesper</a>
               </div>
             </div>
           </div>
