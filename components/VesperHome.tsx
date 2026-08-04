@@ -401,17 +401,14 @@ export default function VesperHome() {
   /**
    * Fire-and-forget click on the @Vesper link. Deliberately not awaited and
    * never preventDefault'd: the browser opens Instagram through the anchor
-   * itself, so a failed or missing beacon costs nothing. Sends page_path and
-   * nothing else — event_name and placement are fixed on the server.
+   * itself, so a failed or missing beacon costs nothing.
+   *
+   * Sends no data at all — the ping itself is the whole event, and the server
+   * fixes every value it records. Nothing leaves the browser.
    */
   const trackInstagramClick = () => {
     try {
-      if (typeof navigator === "undefined" || !navigator.sendBeacon) return;
-      const body = new Blob(
-        [JSON.stringify({ page_path: window.location.pathname.slice(0, 300) })],
-        { type: "application/json" }
-      );
-      navigator.sendBeacon("/api/analytics/instagram-outbound", body);
+      navigator?.sendBeacon?.("/api/analytics/instagram-outbound");
     } catch {
       // Navigation must never depend on analytics.
     }

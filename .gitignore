@@ -4,4 +4,6 @@ out
 .DS_Store
 *.log
 .env*
+# Names only, never values — safe to track.
+!.env.example
 .vercel

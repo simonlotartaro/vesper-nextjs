@@ -10,16 +10,18 @@ create table if not exists public.analytics_events (
   created_at  timestamptz not null default now(),
   event_name  text not null,
   placement   text,
-  page_path   text,
+  page_path   text not null default '/',
 
-  -- The server fixes these two values; the database refuses anything else,
-  -- so a bug in the route cannot widen what gets recorded.
+  -- The server fixes all three values; the database refuses anything else,
+  -- so a bug in the route cannot widen what gets recorded. page_path is
+  -- pinned to '/' — the site is a single page, and a free-text path is the
+  -- one field through which personal data could ever leak in.
   constraint analytics_events_event_name_check
     check (event_name = 'instagram_outbound_click'),
   constraint analytics_events_placement_check
     check (placement = 'menu_footer'),
-  constraint analytics_events_page_path_len_check
-    check (char_length(page_path) <= 300)
+  constraint analytics_events_page_path_check
+    check (page_path = '/')
 );
 
 create index if not exists analytics_events_created_at_idx
