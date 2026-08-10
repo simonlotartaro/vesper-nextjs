@@ -906,10 +906,10 @@ export default function VesperHome() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: isMobile ? 0 : 12,
-            width: isMobile ? 56 : "auto",
-            height: isMobile ? 56 : 46,
-            padding: isMobile ? 0 : "0 22px 0 16px",
+            gap: isMobile ? 0 : 9,
+            width: isMobile ? 54 : "auto",
+            height: isMobile ? 54 : 38,
+            padding: isMobile ? 0 : "0 17px 0 13px",
             borderRadius: 999,
             background: WA_GREEN,
             color: "#FFFFFF",
@@ -917,9 +917,9 @@ export default function VesperHome() {
             boxShadow: "0 8px 28px rgba(0,0,0,0.34)",
           }}
         >
-          <WhatsAppIcon size={isMobile ? 26 : 20} />
+          <WhatsAppIcon size={isMobile ? 24 : 17} />
           {!isMobile && (
-            <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+            <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
               {t.waLabel}
             </span>
           )}
