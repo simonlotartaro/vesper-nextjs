@@ -902,7 +902,10 @@ export default function VesperHome() {
             position: "fixed",
             bottom: "calc(env(safe-area-inset-bottom, 0px) + " + (isMobile ? "20px" : "28px") + ")",
             right: "calc(env(safe-area-inset-right, 0px) + " + (isMobile ? "20px" : "28px") + ")",
-            zIndex: 90,
+            // Above the overlays (100), which paint an opaque background over
+            // anything below them, but under the close buttons (150), the menu
+            // (200) and the nav (300).
+            zIndex: 110,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
