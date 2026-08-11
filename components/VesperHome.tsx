@@ -132,7 +132,7 @@ const T = {
     waMessage: "Hola Vesper, me gustaría recibir información sobre mesas y espacios privados para Vesper Madrid.",
     about: {
       eyebrow: "Sobre Vesper",
-      headline: "Vesper nace de una realidad simple\ny, a la vez, poderosa.",
+      headline: "Vesper nace de una\nrealidad simple y,\na la vez, poderosa.",
       p1: "Alrededor de los deportistas de élite se forma, de manera natural, un ecosistema único. No solo por lo que han conseguido en su carrera, sino por lo que representan: disciplina, carácter, temple bajo presión, respeto, historia y legado.",
       p2: "Los círculos que se forman hoy carecen de continuidad y de propósito: solo buscan la presencia puntual de un deportista de élite para atraer marcas y patrocinadores. En su mayoría son encuentros improvisados, sin identidad, sin continuidad y sin profundidad, movidos únicamente por el dinero.",
       p3: "Con Vesper queremos ordenar ese mundo y construir un círculo con sentido: uno que mantenga continuidad y lógica, y que desarrolle de forma natural su propia personalidad y profundidad. Sin duda será uno de los círculos más poderosos del mundo, y de ahí surgirán innumerables oportunidades.",
