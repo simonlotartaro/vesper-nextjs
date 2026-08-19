@@ -99,14 +99,16 @@ const T = {
         { name: "KITCHEN", desc: "A gastronomic experience of the highest level." },
         { name: "LIVE",    desc: "Live music to accompany the night." },
       ],
-      experienceLabel: "THE VESPER EXPERIENCE",
-      experienceIntro: "A night designed as one continuous journey — from the first welcome drink to the final set.",
+      experienceLabel: "PROGRAMME",
+      experienceIntro: "A night designed as one continuous journey — from sunset to farewell.",
       timeline: [
-        { time: "19:30", name: "ARRIVAL", items: ["Welcome drink", "Valet parking"] },
-        { time: "20:00", name: "CULINARY EXPERIENCE", items: ["Excellence cocktail menu", "Curated gastronomic corners", "Signature cocktail stations"] },
-        { time: "22:00", name: "THE NIGHT UNFOLDS", items: ["A musical journey featuring seven DJs", "Premium open bar throughout the evening", "Late-night bites"] },
+        { time: "19:30", name: "SUNSET — GUEST ARRIVAL", desc: "Valet parking, photocall and a red carpet welcome alongside sporting legends. Distrito Ramsés, entirely private." },
+        { time: "20:00", name: "WELCOME — RECEPTION", desc: "A walk through the spaces of Distrito Ramsés, cuisine designed for the occasion and a selection of experiences." },
+        { time: "21:45", name: "VESPER MOMENT", desc: "The heart of the night. An intimate conversation with a sporting legend, before an audience that will not happen twice." },
+        { time: "22:30", name: "NIGHT EXPERIENCE — THE PARTY", desc: "Four DJs, premium bars, signature cocktails and a charged atmosphere in every space." },
+        { time: "01:00", name: "FAREWELL", desc: "The close of the evening and a personal farewell to every guest." },
       ],
-      experienceStats: ["7 DJs", "6 Hours of Music", "Premium Open Bar"],
+      experienceStats: ["4 DJs", "Premium Bars", "Signature Cocktails"],
       venue: "RAMSÉS",
       address: "Pl. de la Independencia, 4\nSalamanca, 28001 Madrid",
       access: "Private access\nFirst floor",
@@ -198,14 +200,16 @@ const T = {
         { name: "COCINA",  desc: "Una experiencia gastronómica de primer nivel." },
         { name: "MÚSICA",  desc: "Música en directo para acompañar la noche." },
       ],
-      experienceLabel: "LA EXPERIENCIA VESPER",
-      experienceIntro: "Una noche concebida como un único recorrido continuo — desde el primer welcome drink hasta el último set.",
+      experienceLabel: "PROGRAMME",
+      experienceIntro: "Una noche concebida como un único recorrido continuo — del atardecer a la despedida.",
       timeline: [
-        { time: "19:30", name: "LLEGADA", items: ["Welcome drink", "Valet parking"] },
-        { time: "20:00", name: "EXPERIENCIA CULINARIA", items: ["Carta de coctelería de excelencia", "Rincones gastronómicos seleccionados", "Estaciones de coctelería de autor"] },
-        { time: "22:00", name: "LA NOCHE SE DESPLIEGA", items: ["Un viaje musical con siete DJs", "Barra libre premium durante toda la velada", "Bocados de madrugada"] },
+        { time: "19:30", name: "SUNSET — LLEGADA DE INVITADOS", desc: "Valet parking, photocall y bienvenida en la red carpet junto a leyendas del deporte. Distrito Ramsés en total exclusividad." },
+        { time: "20:00", name: "WELCOME — RECEPCIÓN", desc: "Recorrido por los espacios de Distrito Ramsés, gastronomía diseñada para la ocasión y una selección de experiencias." },
+        { time: "21:45", name: "VESPER MOMENT", desc: "El corazón de la noche. Una conversación íntima con una leyenda del deporte, ante una audiencia irrepetible." },
+        { time: "22:30", name: "NIGHT EXPERIENCE — FIESTA", desc: "Cuatro DJs, barras premium, signature cocktails y una atmósfera vibrante en cada espacio." },
+        { time: "01:00", name: "FAREWELL", desc: "Cierre del evento y despedida personalizada de los invitados." },
       ],
-      experienceStats: ["7 DJs", "6 horas de música", "Barra libre premium"],
+      experienceStats: ["4 DJs", "Barras premium", "Signature cocktails"],
       venue: "RAMSÉS",
       address: "Pl. de la Independencia, 4\nSalamanca, 28001 Madrid",
       access: "Acceso privado\nPrimera planta",
@@ -297,14 +301,16 @@ const T = {
         { name: "CUISINE", desc: "Proposition gastronomique de haut niveau." },
         { name: "LIVE",    desc: "Musique en direct pour accompagner la nuit." },
       ],
-      experienceLabel: "L'EXPÉRIENCE VESPER",
-      experienceIntro: "Une nuit conçue comme un seul parcours continu — du premier welcome drink au dernier set.",
+      experienceLabel: "PROGRAMME",
+      experienceIntro: "Une nuit conçue comme un seul parcours continu — du coucher du soleil aux adieux.",
       timeline: [
-        { time: "19h30", name: "ARRIVÉE", items: ["Welcome drink", "Voiturier"] },
-        { time: "20h00", name: "EXPÉRIENCE CULINAIRE", items: ["Carte de cocktails d'excellence", "Coins gastronomiques sélectionnés", "Stations de cocktails signature"] },
-        { time: "22h00", name: "LA NUIT SE DÉPLOIE", items: ["Un voyage musical avec sept DJs", "Open bar premium tout au long de la soirée", "Bouchées de fin de soirée"] },
+        { time: "19:30", name: "SUNSET — ARRIVÉE DES INVITÉS", desc: "Voiturier, photocall et accueil sur le tapis rouge aux côtés de légendes du sport. Distrito Ramsés en exclusivité totale." },
+        { time: "20:00", name: "WELCOME — RÉCEPTION", desc: "Parcours à travers les espaces du Distrito Ramsés, une gastronomie pensée pour l'occasion et une sélection d'expériences." },
+        { time: "21:45", name: "VESPER MOMENT", desc: "Le cœur de la nuit. Une conversation intime avec une légende du sport, devant un public irremplaçable." },
+        { time: "22:30", name: "NIGHT EXPERIENCE — LA FÊTE", desc: "Quatre DJs, bars premium, signature cocktails et une atmosphère vibrante dans chaque espace." },
+        { time: "01:00", name: "FAREWELL", desc: "Clôture de la soirée et adieu personnalisé à chaque invité." },
       ],
-      experienceStats: ["7 DJs", "6 heures de musique", "Open bar premium"],
+      experienceStats: ["4 DJs", "Bars premium", "Signature cocktails"],
       venue: "RAMSÉS",
       address: "Pl. de la Independencia, 4\nSalamanca, 28001 Madrid",
       access: "Accès privé\nPremier étage",
@@ -806,7 +812,7 @@ export default function VesperHome() {
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontStyle: "italic", fontSize: "clamp(15px,1.4vw,20px)", color: "#d6d2c8", lineHeight: 1.75, textAlign: "center", maxWidth: 620, margin: "0 auto clamp(38px,6vh,64px)" }}>{t.event.experienceIntro}</p>
 
             <div style={{ maxWidth: 780, margin: "0 auto" }}>
-              {(t.event.timeline as readonly { time: string; name: string; items: readonly string[] }[]).map((step, i, arr) => (
+              {(t.event.timeline as readonly { time: string; name: string; desc: string }[]).map((step, i, arr) => (
                 <div key={i} style={{ display: "flex", gap: isMobile ? 18 : 34, paddingBottom: i === arr.length - 1 ? 0 : "clamp(30px,4.5vh,48px)" }}>
                   {/* rail */}
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, paddingTop: 6 }}>
@@ -818,12 +824,7 @@ export default function VesperHome() {
                       <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px,2.6vw,34px)", color: "#C6A258", lineHeight: 1 }}>{step.time}</span>
                       <span style={{ fontSize: 10, letterSpacing: "0.36em", textTransform: "uppercase", color: "#F4EFE4" }}>{step.name}</span>
                     </div>
-                    {step.items.map((item, j) => (
-                      <div key={j} style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 7 }}>
-                        <span style={{ color: "#C6A258", opacity: 0.55, fontSize: 12, lineHeight: 1.7, flexShrink: 0 }}>—</span>
-                        <span style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(14px,1.3vw,18px)", color: "#bdb9af", lineHeight: 1.7 }}>{item}</span>
-                      </div>
-                    ))}
+                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(14px,1.3vw,18px)", color: "#bdb9af", lineHeight: 1.7, margin: 0, maxWidth: "58ch" }}>{step.desc}</p>
                   </div>
                 </div>
               ))}
