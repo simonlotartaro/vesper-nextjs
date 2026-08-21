@@ -28,7 +28,7 @@ const SPACES: readonly { id: SpaceId; name: string; src: string }[] = [
   { id: "la-taberna", name: "La Taberna", src: "/assets/la-taberna.jpg" },
   { id: "el-tabanco", name: "El Tabanco", src: "/assets/el-tabanco.jpg" },
   { id: "el-senorito", name: "El Señorito", src: "/assets/el-senorito.jpg" },
-  { id: "chimenea", name: "Chimenea", src: "/assets/chimenea.jpg" },
+  { id: "chimenea", name: "Christine", src: "/assets/chimenea.jpg" },
   { id: "captain-room", name: "Captain Room", src: "/assets/captain-room.jpg" },
   { id: "black", name: "Black", src: "/assets/black.jpg" },
 ];
