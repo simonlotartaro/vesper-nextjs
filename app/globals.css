@@ -41,6 +41,13 @@ select option { background: #0C0F18; color: #ECE7DB; }
 .v-wa { transition: transform .4s cubic-bezier(.16,1,.3,1), filter .4s cubic-bezier(.16,1,.3,1), box-shadow .4s cubic-bezier(.16,1,.3,1); }
 .v-wa:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 12px 34px rgba(0,0,0,0.42); }
 
+/* Private spaces: the image lifts, it never gains a card or a shadow */
+.v-space { transition: transform .5s cubic-bezier(.16,1,.3,1), filter .5s cubic-bezier(.16,1,.3,1); }
+.v-space:hover { transform: translateY(-2px); filter: brightness(1.07); }
+
+.v-space-cta { transition: background-color .4s ease, color .4s ease; }
+.v-space-cta:hover { background-color: #C6A258; color: #06080F; }
+
 .v-lang { transition: color .4s cubic-bezier(.16,1,.3,1), border-color .4s cubic-bezier(.16,1,.3,1); }
 .v-lang:hover { color: #C6A258; }
 

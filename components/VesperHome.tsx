@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import MembersLoginFields from "@/components/MembersLoginFields";
 import AboutSection from "@/components/AboutSection";
+import PrivateSpaces, { type SpaceId } from "@/components/PrivateSpaces";
 
 /**
  * Vesper — full-screen interactive homepage.
@@ -116,6 +117,16 @@ const T = {
       dresscode: "Dress code\nelegant",
       inviteOnly: "BY INVITATION ONLY",
       cta: "REQUEST ACCESS",
+      spaces: {
+        label: "PRIVATE SPACES",
+        intro: "A selection of private spaces within Ramsés, available for groups seeking a more intimate Vesper experience.",
+        explore: "Explore the spaces",
+        mapHint: "Tap to enlarge",
+        mapAlt: "Private spaces at Ramsés — main floor plan",
+        eyebrow: "Private Space — Ramsés Madrid",
+        cta: "Private enquiry",
+        enquiry: "Hi Vesper, I’d like to receive information about {space} for Vesper Madrid.",
+      },
     },
   },
   es: {
@@ -217,6 +228,16 @@ const T = {
       dresscode: "Dress code\nelegante",
       inviteOnly: "ÚNICAMENTE POR INVITACIÓN",
       cta: "SOLICITAR ACCESO",
+      spaces: {
+        label: "ESPACIOS PRIVADOS",
+        intro: "Una selección de espacios privados dentro de Ramsés, disponibles para grupos que buscan vivir Vesper de una forma más íntima.",
+        explore: "Descubre los espacios",
+        mapHint: "Toca para ampliar",
+        mapAlt: "Espacios privados de Ramsés — plano de la planta principal",
+        eyebrow: "Espacio privado — Ramsés Madrid",
+        cta: "Consulta privada",
+        enquiry: "Hola Vesper, me gustaría recibir información sobre {space} para Vesper Madrid.",
+      },
     },
   },
   fr: {
@@ -318,6 +339,16 @@ const T = {
       dresscode: "Code vestimentaire\nélégant",
       inviteOnly: "SUR INVITATION UNIQUEMENT",
       cta: "DEMANDER L'ACCÈS",
+      spaces: {
+        label: "ESPACES PRIVÉS",
+        intro: "Une sélection d'espaces privés au sein de Ramsés, pour les groupes qui souhaitent vivre Vesper de manière plus intime.",
+        explore: "Découvrez les espaces",
+        mapHint: "Touchez pour agrandir",
+        mapAlt: "Espaces privés de Ramsés — plan de l'étage principal",
+        eyebrow: "Espace privé — Ramsés Madrid",
+        cta: "Demande privée",
+        enquiry: "Bonjour Vesper, je souhaiterais recevoir des informations sur {space} pour Vesper Madrid.",
+      },
     },
   },
 } as const;
@@ -377,8 +408,15 @@ export default function VesperHome() {
   const [membersOpen, setMembersOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [eventOpen, setEventOpen] = useState(false);
+  const [spaceOpen, setSpaceOpen] = useState<SpaceId | null>(null);
   const [lang, setLang] = useState<Lang>("en");
   const cardRef = useRef<HTMLDivElement | null>(null);
+
+  // Escape and Back are handled by listeners registered once, so they read the
+  // open space through a ref: both must close the space modal alone, leaving
+  // the Events overlay underneath it open.
+  const spaceOpenRef = useRef<SpaceId | null>(null);
+  spaceOpenRef.current = spaceOpen;
 
   const t = T[lang];
 
@@ -387,15 +425,17 @@ export default function VesperHome() {
     mq();
     window.addEventListener("resize", mq);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setModalOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setMenuOpen(false); setEventOpen(false); }
+      if (e.key !== "Escape") return;
+      if (spaceOpenRef.current) { setSpaceOpen(null); return; }
+      setModalOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setMenuOpen(false); setEventOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => { window.removeEventListener("resize", mq); window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = (modalOpen || aboutOpen || contactOpen || membersOpen || menuOpen || eventOpen) ? "hidden" : "";
-  }, [modalOpen, aboutOpen, contactOpen, membersOpen, menuOpen, eventOpen]);
+    document.body.style.overflow = (modalOpen || aboutOpen || contactOpen || membersOpen || menuOpen || eventOpen || spaceOpen !== null) ? "hidden" : "";
+  }, [modalOpen, aboutOpen, contactOpen, membersOpen, menuOpen, eventOpen, spaceOpen]);
 
   // Push a history entry when any overlay opens so browser back closes it instead of leaving the page
   useEffect(() => {
@@ -405,7 +445,12 @@ export default function VesperHome() {
   }, [aboutOpen, contactOpen, eventOpen, membersOpen]);
 
   useEffect(() => {
+    if (spaceOpen) window.history.pushState({ vesperOverlay: true }, "");
+  }, [spaceOpen]);
+
+  useEffect(() => {
     const handlePop = () => {
+      if (spaceOpenRef.current) { setSpaceOpen(null); return; }
       setAboutOpen(false);
       setContactOpen(false);
       setEventOpen(false);
@@ -861,6 +906,16 @@ export default function VesperHome() {
             </div>
           </div>
 
+          {/* PRIVATE SPACES */}
+          <PrivateSpaces
+            t={t.event.spaces}
+            isMobile={isMobile}
+            waNumber={WA_NUMBER}
+            open={spaceOpen}
+            onOpen={setSpaceOpen}
+            onClose={() => setSpaceOpen(null)}
+          />
+
           {/* BOTTOM CTA */}
           <div
             onClick={() => { setEventOpen(false); setModalOpen(true); setSubmitted(false); }}
@@ -891,7 +946,7 @@ export default function VesperHome() {
       {/* Hidden while a form or the menu is open: 56px pinned bottom-right
           would sit on top of their submit buttons on mobile. Stays visible
           over the Events overlay, where it does not compete with anything. */}
-      {ready && !modalOpen && !contactOpen && !membersOpen && !menuOpen && (
+      {ready && !modalOpen && !contactOpen && !membersOpen && !menuOpen && !spaceOpen && (
         <a
           href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(t.waMessage)}`}
           target="_blank"
