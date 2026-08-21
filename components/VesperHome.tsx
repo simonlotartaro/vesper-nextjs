@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import MembersLoginFields from "@/components/MembersLoginFields";
 import AboutSection from "@/components/AboutSection";
-import FourvenuesEmbed from "@/components/FourvenuesEmbed";
 
 /**
  * Vesper — full-screen interactive homepage.
@@ -95,7 +94,6 @@ const T = {
       time: "19:30 to 01:00",
       desc: "A Vesper evening at Ramsés, by the Puerta de Alcalá.\nA private gathering on the closing night of the Madrid Grand Prix 2026, conceived to bring together a selected circle under the Vesper universe.",
       includesLabel: "THE EVENING INCLUDES",
-      ticketsLabel: "TICKETS",
       features: [
         { name: "BAR",     desc: "Signature cocktails and a premium selection of drinks." },
         { name: "KITCHEN", desc: "A gastronomic experience of the highest level." },
@@ -197,7 +195,6 @@ const T = {
       time: "19:30 a 01:00",
       desc: "Una velada Vesper en Ramsés, junto a la Puerta de Alcalá.\nUn encuentro privado en la noche de cierre del Gran Premio de Madrid 2026, pensado para reunir a un círculo seleccionado bajo el universo Vesper.",
       includesLabel: "LA VELADA INCLUYE",
-      ticketsLabel: "ENTRADAS",
       features: [
         { name: "BAR",     desc: "Coctelería de autor y una selección de bebidas premium." },
         { name: "COCINA",  desc: "Una experiencia gastronómica de primer nivel." },
@@ -299,7 +296,6 @@ const T = {
       time: "19h30 à 01h00",
       desc: "Une soirée Vesper chez Ramsés, face à la Puerta de Alcalá.\nUne rencontre privée lors de la nuit de clôture du Grand Prix de Madrid 2026, pensée pour réunir un cercle sélectionné sous l'univers Vesper.",
       includesLabel: "LA SOIRÉE COMPREND",
-      ticketsLabel: "BILLETTERIE",
       features: [
         { name: "BAR",     desc: "Cocktails signature et une sélection de boissons premium." },
         { name: "CUISINE", desc: "Proposition gastronomique de haut niveau." },
@@ -409,17 +405,7 @@ export default function VesperHome() {
   }, [aboutOpen, contactOpen, eventOpen, membersOpen]);
 
   useEffect(() => {
-    // The Fourvenues ticket widget deep-links itself by writing
-    // window.location.hash. Chrome fires popstate for that fragment
-    // navigation too, which would close the Events overlay the moment the
-    // widget finished loading. Only a pop that leaves the fragment untouched
-    // is a real Back out of an overlay.
-    let lastHash = window.location.hash;
     const handlePop = () => {
-      if (window.location.hash !== lastHash) {
-        lastHash = window.location.hash;
-        return;
-      }
       setAboutOpen(false);
       setContactOpen(false);
       setEventOpen(false);
@@ -872,18 +858,6 @@ export default function VesperHome() {
             </div>
             <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "12px 36px" }}>
               <span style={{ fontSize: 10, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C6A258" }}>{t.event.inviteOnly}</span>
-            </div>
-          </div>
-
-          {/* TICKETS — Fourvenues */}
-          <div style={{ padding: "0 clamp(28px,6vw,80px) clamp(48px,7vh,80px)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: "clamp(32px,5vh,52px)" }}>
-              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
-              <span style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C6A258", whiteSpace: "nowrap" }}>{t.event.ticketsLabel}</span>
-              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
-            </div>
-            <div style={{ maxWidth: 980, margin: "0 auto" }}>
-              <FourvenuesEmbed />
             </div>
           </div>
 
