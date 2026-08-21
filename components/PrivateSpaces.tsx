@@ -110,7 +110,8 @@ export default function PrivateSpaces({
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "repeat(2, minmax(0, 1fr))",
+            alignItems: "start",
             columnGap: "clamp(24px,3.5vw,64px)",
             rowGap: isMobile ? "clamp(48px,7vh,72px)" : "clamp(56px,9vh,120px)",
             maxWidth: 1240,
@@ -131,9 +132,6 @@ export default function PrivateSpaces({
                 background: "transparent",
                 textAlign: "left",
                 cursor: "pointer",
-                // the right-hand column drops, so the grid reads as a
-                // composition rather than a product listing
-                marginTop: !isMobile && i % 2 === 1 ? "clamp(40px,7vh,110px)" : 0,
               }}
             >
               <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 2", overflow: "hidden", border: "1px solid rgba(198,162,88,0.13)" }}>
