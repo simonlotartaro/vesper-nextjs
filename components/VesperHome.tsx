@@ -104,7 +104,7 @@ const T = {
       experienceIntro: "A night designed as one continuous journey — from sunset to farewell.",
       timeline: [
         { time: "19:30", name: "SUNSET — GUEST ARRIVAL", desc: "Valet parking, photocall and a red carpet welcome alongside sporting legends. Distrito Ramsés, entirely private." },
-        { time: "20:00", name: "WELCOME — RECEPTION", desc: "A walk through the spaces of Distrito Ramsés, cuisine designed for the occasion and a selection of experiences." },
+        { time: "20:00", name: "WELCOME — DINNER", desc: "A walk through the spaces of Distrito Ramsés, cuisine designed for the occasion and a selection of experiences." },
         { time: "21:45", name: "VESPER MOMENT", desc: "The heart of the night. An intimate conversation with a sporting legend, before an audience that will not happen twice." },
         { time: "22:30", name: "NIGHT EXPERIENCE — THE PARTY", desc: "Four DJs, premium bars, signature cocktails and a charged atmosphere in every space." },
         { time: "01:00", name: "FAREWELL", desc: "The close of the evening and a personal farewell to every guest." },
@@ -215,7 +215,7 @@ const T = {
       experienceIntro: "Una noche concebida como un único recorrido continuo — del atardecer a la despedida.",
       timeline: [
         { time: "19:30", name: "SUNSET — LLEGADA DE INVITADOS", desc: "Valet parking, photocall y bienvenida en la red carpet junto a leyendas del deporte. Distrito Ramsés en total exclusividad." },
-        { time: "20:00", name: "WELCOME — RECEPCIÓN", desc: "Recorrido por los espacios de Distrito Ramsés, gastronomía diseñada para la ocasión y una selección de experiencias." },
+        { time: "20:00", name: "WELCOME — CENA", desc: "Recorrido por los espacios de Distrito Ramsés, gastronomía diseñada para la ocasión y una selección de experiencias." },
         { time: "21:45", name: "VESPER MOMENT", desc: "El corazón de la noche. Una conversación íntima con una leyenda del deporte, ante una audiencia irrepetible." },
         { time: "22:30", name: "NIGHT EXPERIENCE — FIESTA", desc: "Cuatro DJs, barras premium, signature cocktails y una atmósfera vibrante en cada espacio." },
         { time: "01:00", name: "FAREWELL", desc: "Cierre del evento y despedida personalizada de los invitados." },
@@ -326,7 +326,7 @@ const T = {
       experienceIntro: "Une nuit conçue comme un seul parcours continu — du coucher du soleil aux adieux.",
       timeline: [
         { time: "19:30", name: "SUNSET — ARRIVÉE DES INVITÉS", desc: "Voiturier, photocall et accueil sur le tapis rouge aux côtés de légendes du sport. Distrito Ramsés en exclusivité totale." },
-        { time: "20:00", name: "WELCOME — RÉCEPTION", desc: "Parcours à travers les espaces du Distrito Ramsés, une gastronomie pensée pour l'occasion et une sélection d'expériences." },
+        { time: "20:00", name: "WELCOME — DÎNER", desc: "Parcours à travers les espaces du Distrito Ramsés, une gastronomie pensée pour l'occasion et une sélection d'expériences." },
         { time: "21:45", name: "VESPER MOMENT", desc: "Le cœur de la nuit. Une conversation intime avec une légende du sport, devant un public irremplaçable." },
         { time: "22:30", name: "NIGHT EXPERIENCE — LA FÊTE", desc: "Quatre DJs, bars premium, signature cocktails et une atmosphère vibrante dans chaque espace." },
         { time: "01:00", name: "FAREWELL", desc: "Clôture de la soirée et adieu personnalisé à chaque invité." },
