@@ -31,7 +31,7 @@ const T = {
     mobileBtn: "Request Access",
     mobileInvite: "By invitation or referral only",
     waLabel: "Private Enquiries",
-    waMessage: "Hi Vesper, I’d like to receive information about private tables and spaces for Vesper Madrid.",
+    waMessage: "Hi Vesper, I’d like to receive information about upcoming Vesper events and private enquiries.",
     about: {
       eyebrow: "About",
       headline: "Vesper stems from a simple,\nyet powerful reality.",
@@ -164,7 +164,7 @@ const T = {
     mobileBtn: "Solicitar acceso",
     mobileInvite: "Acceso únicamente por invitación o recomendación",
     waLabel: "Consultas privadas",
-    waMessage: "Hola Vesper, me gustaría recibir información sobre mesas y espacios privados para Vesper Madrid.",
+    waMessage: "Hola Vesper, me gustaría recibir información sobre próximos eventos de Vesper y consultas privadas.",
     about: {
       eyebrow: "Sobre Vesper",
       headline: "Vesper nace de una\nrealidad simple y,\na la vez, poderosa.",
@@ -296,7 +296,7 @@ const T = {
     mobileBtn: "Demander l'accès",
     mobileInvite: "Sur invitation ou parrainage uniquement",
     waLabel: "Demandes Privées",
-    waMessage: "Bonjour Vesper, je souhaiterais recevoir des informations sur les tables et espaces privés pour Vesper Madrid.",
+    waMessage: "Bonjour Vesper, je souhaiterais recevoir des informations sur les prochains événements Vesper et les demandes privées.",
     about: {
       eyebrow: "À Propos",
       headline: "Vesper naît d'une réalité\nsimple, mais puissante.",
