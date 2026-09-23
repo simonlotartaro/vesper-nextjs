@@ -3,7 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import MembersLoginFields from "@/components/MembersLoginFields";
 import AboutSection from "@/components/AboutSection";
-import PrivateSpaces, { type SpaceId } from "@/components/PrivateSpaces";
+import EventsIndex, { RequestAccessBar } from "@/components/EventsIndex";
+import ChapterMadrid from "@/components/ChapterMadrid";
 
 /**
  * Vesper — full-screen interactive homepage.
@@ -105,7 +106,7 @@ const T = {
       timeline: [
         { time: "19:30", name: "SUNSET — GUEST ARRIVAL", desc: "Valet parking, photocall and a red carpet welcome alongside sporting legends. Distrito Ramsés, entirely private." },
         { time: "20:00", name: "WELCOME — DINNER", desc: "A walk through the spaces of Distrito Ramsés, cuisine designed for the occasion and a selection of experiences." },
-        { time: "21:45", name: "VESPER MOMENT", desc: "The heart of the night. An intimate conversation with a sporting legend, before an audience that will not happen twice." },
+        { time: "21:45", name: "VESPER MOMENT", desc: "The heart of the night. An intimate conversation with a sporting legend, before an audience that could not happen twice." },
         { time: "22:30", name: "NIGHT EXPERIENCE — THE PARTY", desc: "Four DJs, premium bars, signature cocktails and a charged atmosphere in every space." },
         { time: "01:00", name: "FAREWELL", desc: "The close of the evening and a personal farewell to every guest." },
       ],
@@ -117,6 +118,27 @@ const T = {
       dresscode: "Dress code\nelegant",
       inviteOnly: "BY INVITATION ONLY",
       cta: "REQUEST ACCESS",
+      events: {
+        upNext: "UP NEXT",
+        previous: "PREVIOUS CHAPTERS",
+        comingNext: "COMING NEXT",
+        viewChapter: "VIEW CHAPTER",
+        madrid: {
+          eyebrow: "CHAPTER I — MADRID",
+          headline: "Where Vesper began.",
+          nightLabel: "THE NIGHT",
+          nightCopy: "Vesper Chapter I brought together athletes from different disciplines, partners and guests in Madrid for an evening built around sport, conversation and connection.",
+          eveningLabel: "THE EVENING",
+          eveningIntro: "The night unfolded as one continuous journey — from sunset to farewell.",
+          settingLabel: "THE SETTING",
+          settingPlace: "PUERTA DE ALCALÁ · MADRID",
+          galleryLabel: "THE NIGHT IN IMAGES",
+          peopleLabel: "THE PEOPLE",
+          momentLabel: "VESPER MOMENT",
+          momentCopy: "Private conversations recorded during Chapter I.",
+          back: "Back to chapters",
+        },
+      },
       spaces: {
         label: "PRIVATE SPACES",
         intro: "A selection of private spaces within Ramsés, available for groups seeking a more intimate Vesper experience.",
@@ -228,6 +250,27 @@ const T = {
       dresscode: "Dress code\nelegante",
       inviteOnly: "ÚNICAMENTE POR INVITACIÓN",
       cta: "SOLICITAR ACCESO",
+      events: {
+        upNext: "PRÓXIMAMENTE",
+        previous: "CAPÍTULOS ANTERIORES",
+        comingNext: "PRÓXIMAMENTE",
+        viewChapter: "VER CAPÍTULO",
+        madrid: {
+          eyebrow: "CHAPTER I — MADRID",
+          headline: "Donde comenzó Vesper.",
+          nightLabel: "LA NOCHE",
+          nightCopy: "El Chapter I de Vesper reunió en Madrid a deportistas de distintas disciplinas, partners e invitados en una noche construida alrededor del deporte, la conversación y las conexiones.",
+          eveningLabel: "LA VELADA",
+          eveningIntro: "La noche transcurrió como un único recorrido continuo — del atardecer a la despedida.",
+          settingLabel: "EL ESCENARIO",
+          settingPlace: "PUERTA DE ALCALÁ · MADRID",
+          galleryLabel: "LA NOCHE EN IMÁGENES",
+          peopleLabel: "LAS PERSONAS",
+          momentLabel: "VESPER MOMENT",
+          momentCopy: "Conversaciones privadas grabadas durante Chapter I.",
+          back: "Volver a los capítulos",
+        },
+      },
       spaces: {
         label: "ESPACIOS PRIVADOS",
         intro: "Una selección de espacios privados dentro de Ramsés, disponibles para grupos que buscan vivir Vesper de una forma más íntima.",
@@ -339,6 +382,27 @@ const T = {
       dresscode: "Code vestimentaire\nélégant",
       inviteOnly: "SUR INVITATION UNIQUEMENT",
       cta: "DEMANDER L'ACCÈS",
+      events: {
+        upNext: "PROCHAINEMENT",
+        previous: "CHAPITRES PRÉCÉDENTS",
+        comingNext: "PROCHAINEMENT",
+        viewChapter: "VOIR LE CHAPITRE",
+        madrid: {
+          eyebrow: "CHAPTER I — MADRID",
+          headline: "Là où Vesper a commencé.",
+          nightLabel: "LA NUIT",
+          nightCopy: "Le Chapter I de Vesper a réuni à Madrid des athlètes de disciplines différentes, des partenaires et des invités, le temps d'une soirée construite autour du sport, de la conversation et des rencontres.",
+          eveningLabel: "LA SOIRÉE",
+          eveningIntro: "La nuit s'est déroulée comme un seul parcours continu — du coucher du soleil aux adieux.",
+          settingLabel: "LE CADRE",
+          settingPlace: "PUERTA DE ALCALÁ · MADRID",
+          galleryLabel: "LA NUIT EN IMAGES",
+          peopleLabel: "LES INVITÉS",
+          momentLabel: "VESPER MOMENT",
+          momentCopy: "Conversations privées enregistrées pendant le Chapter I.",
+          back: "Retour aux chapitres",
+        },
+      },
       spaces: {
         label: "ESPACES PRIVÉS",
         intro: "Une sélection d'espaces privés au sein de Ramsés, pour les groupes qui souhaitent vivre Vesper de manière plus intime.",
@@ -408,17 +472,25 @@ export default function VesperHome() {
   const [membersOpen, setMembersOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [eventOpen, setEventOpen] = useState(false);
-  const [spaceOpen, setSpaceOpen] = useState<SpaceId | null>(null);
+  // Events opens on the chapter index; a chapter archive is one level down
+  const [chapterOpen, setChapterOpen] = useState<string | null>(null);
   const [lang, setLang] = useState<Lang>("en");
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   // Escape and Back are handled by listeners registered once, so they read the
   // open space through a ref: both must close the space modal alone, leaving
   // the Events overlay underneath it open.
-  const spaceOpenRef = useRef<SpaceId | null>(null);
-  spaceOpenRef.current = spaceOpen;
+  const chapterOpenRef = useRef<string | null>(null);
+  chapterOpenRef.current = chapterOpen;
+  // The overlay element survives the index -> archive swap, so its scroll
+  // position would carry over and drop the visitor mid-chapter.
+  const eventScrollRef = useRef<HTMLDivElement | null>(null);
 
   const t = T[lang];
+
+  /** Events always reopens on the index, never inside a chapter. */
+  const closeEvents = () => { setEventOpen(false); setChapterOpen(null); };
+
 
   useEffect(() => {
     const mq = () => { setIsMobile(window.innerWidth < 820); setReady(true); };
@@ -426,16 +498,16 @@ export default function VesperHome() {
     window.addEventListener("resize", mq);
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (spaceOpenRef.current) { setSpaceOpen(null); return; }
-      setModalOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setMenuOpen(false); setEventOpen(false);
+      if (chapterOpenRef.current) { setChapterOpen(null); return; }
+      setModalOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setMenuOpen(false); closeEvents();
     };
     window.addEventListener("keydown", onKey);
     return () => { window.removeEventListener("resize", mq); window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = (modalOpen || aboutOpen || contactOpen || membersOpen || menuOpen || eventOpen || spaceOpen !== null) ? "hidden" : "";
-  }, [modalOpen, aboutOpen, contactOpen, membersOpen, menuOpen, eventOpen, spaceOpen]);
+    document.body.style.overflow = (modalOpen || aboutOpen || contactOpen || membersOpen || menuOpen || eventOpen) ? "hidden" : "";
+  }, [modalOpen, aboutOpen, contactOpen, membersOpen, menuOpen, eventOpen]);
 
   // Push a history entry when any overlay opens so browser back closes it instead of leaving the page
   useEffect(() => {
@@ -445,15 +517,19 @@ export default function VesperHome() {
   }, [aboutOpen, contactOpen, eventOpen, membersOpen]);
 
   useEffect(() => {
-    if (spaceOpen) window.history.pushState({ vesperOverlay: true }, "");
-  }, [spaceOpen]);
+    if (chapterOpen) window.history.pushState({ vesperOverlay: true }, "");
+  }, [chapterOpen]);
+
+  useEffect(() => {
+    if (eventScrollRef.current) eventScrollRef.current.scrollTop = 0;
+  }, [chapterOpen]);
 
   useEffect(() => {
     const handlePop = () => {
-      if (spaceOpenRef.current) { setSpaceOpen(null); return; }
+      if (chapterOpenRef.current) { setChapterOpen(null); return; }
       setAboutOpen(false);
       setContactOpen(false);
-      setEventOpen(false);
+      closeEvents();
       setMembersOpen(false);
       setMenuOpen(false);
     };
@@ -676,11 +752,11 @@ export default function VesperHome() {
           <div style={{ flex: "0 0 33.333%", background: "#0A0C13", borderLeft: "1px solid rgba(198,162,88,0.15)", display: "flex", flexDirection: "column", height: "100%", padding: "clamp(60px,10vh,100px) clamp(28px,4vw,56px) 48px", animation: "menuSlideIn .45s cubic-bezier(.16,1,.3,1) both", overflowY: "auto" }}>
             <nav style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: "clamp(18px,3vh,32px)" }}>
               {([
-                { key: "home" as const,        action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setModalOpen(false); setEventOpen(false); setHovered(null); setMobileActive(null); window.scrollTo({ top: 0, behavior: "smooth" }); } },
-                { key: "about" as const,       action: () => { setMenuOpen(false); setEventOpen(false); setMembersOpen(false); setContactOpen(false); setAboutOpen(true); } },
+                { key: "home" as const,        action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setModalOpen(false); closeEvents(); setHovered(null); setMobileActive(null); window.scrollTo({ top: 0, behavior: "smooth" }); } },
+                { key: "about" as const,       action: () => { setMenuOpen(false); closeEvents(); setMembersOpen(false); setContactOpen(false); setAboutOpen(true); } },
                 { key: "application" as const, action: () => { setMenuOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(false); setEventOpen(true); } },
-                { key: "contact" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setMembersOpen(false); openContact(); } },
-                { key: "members" as const,     action: () => { setMenuOpen(false); setEventOpen(false); setAboutOpen(false); setContactOpen(false); setMembersOpen(true); } },
+                { key: "contact" as const,     action: () => { setMenuOpen(false); closeEvents(); setAboutOpen(false); setMembersOpen(false); openContact(); } },
+                { key: "members" as const,     action: () => { setMenuOpen(false); closeEvents(); setAboutOpen(false); setContactOpen(false); setMembersOpen(true); } },
               ]).map((item) => (
                 <a key={item.key} href="#" onClick={(e) => { e.preventDefault(); item.action(); }}
                   style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(30px,3.2vw,52px)", color: "#F4EFE4", textDecoration: "none", lineHeight: 1, letterSpacing: "-0.01em", transition: "color .3s ease" }}
@@ -795,138 +871,40 @@ export default function VesperHome() {
         </div>
       )}
 
-      {/* ============ EVENT OVERLAY ============ */}
+      {/* ============ EVENTS OVERLAY — chapter index, archive one level down ============ */}
       {eventOpen && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 100, background: "#06080F", overflowY: "auto", animation: "vFadeIn .5s both" }}>
-          <button onClick={() => setEventOpen(false)} className="v-close" style={{ position: "fixed", top: 28, left: 28, zIndex: 150, background: "transparent", border: "1px solid rgba(198,162,88,0.4)", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}>
+        <div ref={eventScrollRef} style={{ position: "fixed", inset: 0, zIndex: 100, background: "#06080F", overflowY: "auto", animation: "vFadeIn .5s both" }}>
+          <button
+            onClick={() => (chapterOpen ? setChapterOpen(null) : closeEvents())}
+            aria-label={chapterOpen ? t.event.events.madrid.back : t.menu.application}
+            className="v-close"
+            style={{ position: "fixed", top: "calc(env(safe-area-inset-top,0px) + 28px)", left: "calc(env(safe-area-inset-left,0px) + 28px)", zIndex: 150, background: "transparent", border: "1px solid rgba(198,162,88,0.4)", borderRadius: "50%", width: 42, height: 42, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C6A258" }}
+          >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 3L5 8l5 5"/></svg>
           </button>
 
-          {/* HERO */}
-          <div style={{ position: "relative", minHeight: isMobile ? "52vh" : "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(80px,12vh,140px) clamp(28px,6vw,80px) clamp(60px,8vh,100px)", overflow: "hidden" }}>
-            <div style={{ position: "absolute", inset: 0, backgroundImage: "url('/assets/Ramses.png')", backgroundSize: "cover", backgroundPosition: "center center", zIndex: 0 }} />
-            <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.72)", zIndex: 1 }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.45) 0%, rgba(6,8,15,0.1) 40%, rgba(6,8,15,0.82) 100%)", zIndex: 1 }} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/vesper-logo.png" alt="Vesper" style={{ width: "clamp(56px,7vw,82px)", height: "auto", position: "relative", zIndex: 2, marginBottom: "clamp(22px,4vh,38px)", opacity: 0.92 }} />
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "clamp(34px,5.5vw,76px)", color: "#F4EFE4", lineHeight: 1.05, margin: "0 0 clamp(14px,2vh,22px)", position: "relative", zIndex: 2, letterSpacing: "-0.01em" }}>{t.event.title}</h1>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(17px,1.8vw,24px)", color: "#C6A258", margin: "0 0 4px", position: "relative", zIndex: 2 }}>{t.event.date}</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(15px,1.5vw,21px)", color: "#C6A258", margin: "0 0 clamp(28px,4vh,44px)", position: "relative", zIndex: 2 }}>{t.event.time}</p>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(15px,1.4vw,19px)", color: "#d6d2c8", lineHeight: 1.82, maxWidth: 660, margin: 0, position: "relative", zIndex: 2 }}>{t.event.desc}</p>
-          </div>
-
-          {/* INCLUDES */}
-          <div style={{ padding: "clamp(48px,7vh,80px) clamp(28px,6vw,80px)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: "clamp(32px,5vh,52px)" }}>
-              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
-              <span style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C6A258", whiteSpace: "nowrap" }}>{t.event.includesLabel}</span>
-              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 2 }}>
-              {(t.event.features as readonly { name: string; desc: string }[]).map((feature, i) => {
-                const imgs = ["/assets/Drinks.png", "/assets/Comida.png", "/assets/Music.png"];
-                const icons = [
-                  <svg key="b" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M3 4L10 12L17 4h-14M10 12v4M7 16h6"/></svg>,
-                  <svg key="k" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M7 3v14M5 3v4a2 2 0 004 0V3"/><path d="M13 3v14M13 3c3 0 4 1.5 4 3s-1 2.5-4 2.5"/></svg>,
-                  <svg key="l" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C6A258" strokeWidth="1.3"><path d="M8 15V6l9-2v9"/><circle cx="6" cy="15" r="2" fill="#C6A258" stroke="none"/><circle cx="15" cy="13" r="2" fill="#C6A258" stroke="none"/></svg>,
-                ];
-                return (
-                  <div key={i} style={{ position: "relative", minHeight: isMobile ? 200 : 280, overflow: "hidden", border: "1px solid rgba(198,162,88,0.13)" }}>
-                    <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${imgs[i]}')`, backgroundSize: "cover", backgroundPosition: "center", filter: "saturate(1.25) contrast(1.1) brightness(0.9)" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.18) 0%, rgba(6,8,15,0.1) 35%, rgba(6,8,15,0.72) 100%)" }} />
-                    <div style={{ position: "relative", zIndex: 1, padding: "clamp(22px,3vw,36px)" }}>
-                      <div style={{ width: 44, height: 44, border: "1px solid rgba(198,162,88,0.45)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                        {icons[i]}
-                      </div>
-                      <div style={{ fontSize: 10, letterSpacing: "0.36em", textTransform: "uppercase", color: "#C6A258", marginBottom: 10 }}>{feature.name}</div>
-                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(14px,1.3vw,17px)", color: "#bdb9af", lineHeight: 1.65, margin: 0, fontWeight: 300 }}>{feature.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* EXPERIENCE */}
-          <div style={{ padding: "clamp(20px,3vh,40px) clamp(28px,6vw,80px) clamp(48px,7vh,80px)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: "clamp(22px,3vh,32px)" }}>
-              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
-              <span style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C6A258", whiteSpace: "nowrap" }}>{t.event.experienceLabel}</span>
-              <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
-            </div>
-            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontStyle: "italic", fontSize: "clamp(15px,1.4vw,20px)", color: "#d6d2c8", lineHeight: 1.75, textAlign: "center", maxWidth: 620, margin: "0 auto clamp(38px,6vh,64px)" }}>{t.event.experienceIntro}</p>
-
-            <div style={{ maxWidth: 780, margin: "0 auto" }}>
-              {(t.event.timeline as readonly { time: string; name: string; desc: string }[]).map((step, i, arr) => (
-                <div key={i} style={{ display: "flex", gap: isMobile ? 18 : 34, paddingBottom: i === arr.length - 1 ? 0 : "clamp(30px,4.5vh,48px)" }}>
-                  {/* rail */}
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, paddingTop: 6 }}>
-                    <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#C6A258", flexShrink: 0 }} />
-                    {i !== arr.length - 1 && <span style={{ flex: 1, width: 1, background: "linear-gradient(to bottom, rgba(198,162,88,0.45), rgba(198,162,88,0.1))", marginTop: 8 }} />}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: isMobile ? 10 : 16, marginBottom: 14 }}>
-                      <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px,2.6vw,34px)", color: "#C6A258", lineHeight: 1 }}>{step.time}</span>
-                      <span style={{ fontSize: 10, letterSpacing: "0.36em", textTransform: "uppercase", color: "#F4EFE4" }}>{step.name}</span>
-                    </div>
-                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(14px,1.3vw,18px)", color: "#bdb9af", lineHeight: 1.7, margin: 0, maxWidth: "58ch" }}>{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: "clamp(14px,2.5vw,32px)", marginTop: "clamp(40px,6vh,68px)", paddingTop: "clamp(28px,4vh,40px)", borderTop: "1px solid rgba(198,162,88,0.18)", maxWidth: 780, marginLeft: "auto", marginRight: "auto" }}>
-              {(t.event.experienceStats as readonly string[]).map((stat, i, arr) => (
-                <React.Fragment key={i}>
-                  <span style={{ fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#C6A258", whiteSpace: "nowrap" }}>{stat}</span>
-                  {i !== arr.length - 1 && <span style={{ color: "rgba(198,162,88,0.4)", fontSize: 10 }}>·</span>}
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-
-          {/* VENUE */}
-          <div style={{ padding: "0 clamp(28px,6vw,80px) clamp(48px,7vh,80px)", textAlign: "center" }}>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(26px,3.5vw,48px)", color: "#F4EFE4", letterSpacing: "0.1em", margin: "0 0 clamp(24px,4vh,44px)" }}>{t.event.venue}</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "clamp(18px,3vw,50px)", marginBottom: "clamp(32px,5vh,52px)" }}>
-              {([
-                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><path d="M7.5 1C5 1 3 3 3 5.5c0 3.5 4.5 8.5 4.5 8.5S12 9 12 5.5C12 3 10 1 7.5 1z"/><circle cx="7.5" cy="5.5" r="1.5"/></svg>, text: t.event.address },
-                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><circle cx="5.5" cy="7.5" r="3"/><path d="M8.5 7.5h5M11.5 5.5v4"/></svg>, text: t.event.access },
-                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><rect x="1.5" y="1.5" width="12" height="12" rx="1.5"/><path d="M5 10.5V4.5h3.5a2 2 0 010 4H5"/></svg>, text: t.event.parking },
-                { svg: <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.3"><path d="M7.5 1.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" fill="currentColor" stroke="none"/><path d="M7.5 4.5v2L2 10.5h11L7.5 6.5"/><line x1="4" y1="10.5" x2="4" y2="14"/><line x1="11" y1="10.5" x2="11" y2="14"/></svg>, text: t.event.dresscode },
-              ] as { svg: React.ReactNode; text: string }[]).map((item, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, textAlign: "left" }}>
-                  <span style={{ color: "#C6A258", opacity: 0.75, marginTop: 2, flexShrink: 0 }}>{item.svg}</span>
-                  <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(13px,1.1vw,16px)", color: "#9b988e", lineHeight: 1.55, whiteSpace: "pre-line" }}>{item.text}</span>
-                </div>
-              ))}
-            </div>
-            <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "12px 36px" }}>
-              <span style={{ fontSize: 10, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C6A258" }}>{t.event.inviteOnly}</span>
-            </div>
-          </div>
-
-          {/* PRIVATE SPACES */}
-          <PrivateSpaces
-            t={t.event.spaces}
-            isMobile={isMobile}
-            waNumber={WA_NUMBER}
-            open={spaceOpen}
-            onOpen={setSpaceOpen}
-            onClose={() => setSpaceOpen(null)}
-          />
-
-          {/* BOTTOM CTA */}
-          <div
-            onClick={() => { setEventOpen(false); setModalOpen(true); setSubmitted(false); }}
-            style={{ background: "linear-gradient(90deg,#120e04 0%,#1e1606 50%,#120e04 100%)", borderTop: "1px solid rgba(198,162,88,0.38)", padding: "clamp(20px,3vh,28px) clamp(28px,6vw,80px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 18, cursor: "pointer" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "linear-gradient(90deg,#1a1405 0%,#2a1e08 50%,#1a1405 100%)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "linear-gradient(90deg,#120e04 0%,#1e1606 50%,#120e04 100%)")}
-          >
-            <span style={{ fontSize: 11, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C6A258" }}>{t.event.cta}</span>
-            <span style={{ color: "#C6A258", fontSize: 18, lineHeight: 1 }}>→</span>
-          </div>
-
+          {chapterOpen === "madrid" ? (
+            <ChapterMadrid
+              t={t.event.events.madrid}
+              lang={lang}
+              isMobile={isMobile}
+              timeline={t.event.timeline as readonly { time: string; name: string; desc: string }[]}
+              stats={t.event.experienceStats as readonly string[]}
+              venueName={t.event.venue}
+              venueAddress={t.event.address}
+              onBack={() => setChapterOpen(null)}
+            />
+          ) : (
+            <>
+              <EventsIndex
+                t={t.event.events}
+                lang={lang}
+                isMobile={isMobile}
+                onOpenChapter={setChapterOpen}
+              />
+              <RequestAccessBar label={t.event.cta} onClick={() => { closeEvents(); openModal(); }} />
+            </>
+          )}
         </div>
       )}
 
@@ -946,7 +924,7 @@ export default function VesperHome() {
       {/* Hidden while a form or the menu is open: 56px pinned bottom-right
           would sit on top of their submit buttons on mobile. Stays visible
           over the Events overlay, where it does not compete with anything. */}
-      {ready && !modalOpen && !contactOpen && !membersOpen && !menuOpen && !spaceOpen && (
+      {ready && !modalOpen && !contactOpen && !membersOpen && !menuOpen && (
         <a
           href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(t.waMessage)}`}
           target="_blank"

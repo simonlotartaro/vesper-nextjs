@@ -65,3 +65,7 @@ select option { background: #0C0F18; color: #ECE7DB; }
 
 .v-field { transition: border-color .3s; }
 .v-field:focus { border-bottom-color: #C6A258; }
+
+/* Chapter rows: a quiet lift, never a card */
+.v-chapter { transition: background-color .45s cubic-bezier(.16,1,.3,1); }
+.v-chapter:hover { background-color: rgba(198,162,88,0.04); }
