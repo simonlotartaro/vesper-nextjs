@@ -46,6 +46,7 @@ export const CHAPTERS: readonly VesperChapter[] = [
     city: "BUENOS AIRES",
     sport: "POLO",
     status: "upcoming",
+    heroImage: "/assets/polo-buenos-aires.jpg",
     tagline: {
       en: "The next chapter of Vesper is taking shape around one of Argentina's defining sporting worlds.",
       es: "El próximo capítulo de Vesper comienza a tomar forma alrededor de uno de los grandes universos deportivos de Argentina.",

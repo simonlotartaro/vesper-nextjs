@@ -46,37 +46,57 @@ export default function EventsIndex({
   const past = pastChapters();
 
   return (
-    <div style={{ padding: `calc(env(safe-area-inset-top,0px) + clamp(104px,14vh,168px)) clamp(28px,6vw,80px) clamp(72px,11vh,130px)` }}>
+    <div style={{ paddingBottom: "clamp(72px,11vh,130px)" }}>
       {/* ============ UP NEXT ============ */}
       {next.map((c) => (
-        <section key={c.id} style={{ marginBottom: "clamp(90px,15vh,190px)" }}>
-          <Divider label={t.upNext} />
+        <section
+          key={c.id}
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            marginBottom: "clamp(74px,12vh,150px)",
+            padding: `calc(env(safe-area-inset-top,0px) + clamp(104px,15vh,180px)) clamp(28px,6vw,80px) clamp(76px,12vh,140px)`,
+          }}
+        >
+          {/* The photograph sits behind the type, darkened to the Vesper ground.
+              Daylight needs a heavier hand than the Madrid night shot did. */}
+          {c.heroImage && (
+            <>
+              <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${c.heroImage}')`, backgroundSize: "cover", backgroundPosition: "center center", filter: "grayscale(0.35) saturate(0.75) brightness(0.62)", zIndex: 0 }} />
+              <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.7)", zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.92) 0%, rgba(6,8,15,0.55) 30%, rgba(6,8,15,0.72) 70%, #06080F 100%)", zIndex: 1 }} />
+            </>
+          )}
 
-          <div style={{ textAlign: "center", marginTop: "clamp(46px,8vh,96px)" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: GOLD, marginBottom: "clamp(20px,3.5vh,32px)" }}>
-              {c.chapter}
-            </div>
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <Divider label={t.upNext} />
 
-            <h2 style={{ fontFamily: SERIF, fontWeight: 300, fontSize: "clamp(40px,7.4vw,104px)", lineHeight: 1.02, letterSpacing: "0.01em", color: IVORY, margin: 0 }}>
-              {c.city}
-            </h2>
-
-            {c.sport && (
-              <div style={{ fontSize: isMobile ? 11 : 12, letterSpacing: "0.52em", textTransform: "uppercase", color: IVORY, marginTop: "clamp(18px,3vh,30px)", paddingLeft: "0.52em" }}>
-                {localized(c.sport, lang)}
+            <div style={{ textAlign: "center", marginTop: "clamp(46px,8vh,96px)" }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: GOLD, marginBottom: "clamp(20px,3.5vh,32px)" }}>
+                {c.chapter}
               </div>
-            )}
 
-            <span style={{ display: "block", width: 1, height: "clamp(34px,6vh,62px)", background: "linear-gradient(to bottom, rgba(198,162,88,0.55), rgba(198,162,88,0))", margin: "clamp(26px,4.5vh,44px) auto" }} />
+              <h2 style={{ fontFamily: SERIF, fontWeight: 300, fontSize: "clamp(40px,7.4vw,104px)", lineHeight: 1.02, letterSpacing: "0.01em", color: IVORY, margin: 0, textShadow: "0 6px 30px rgba(0,0,0,0.55)" }}>
+                {c.city}
+              </h2>
 
-            {c.tagline && (
-              <p style={{ fontFamily: SERIF, fontWeight: 300, fontStyle: "italic", fontSize: "clamp(16px,1.5vw,22px)", color: BODY, lineHeight: 1.75, maxWidth: 620, margin: "0 auto" }}>
-                {localized(c.tagline, lang)}
-              </p>
-            )}
+              {c.sport && (
+                <div style={{ fontSize: isMobile ? 11 : 12, letterSpacing: "0.52em", textTransform: "uppercase", color: IVORY, marginTop: "clamp(18px,3vh,30px)", paddingLeft: "0.52em" }}>
+                  {localized(c.sport, lang)}
+                </div>
+              )}
 
-            <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", padding: "13px 38px", marginTop: "clamp(30px,5vh,48px)" }}>
-              <span style={{ fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", color: GOLD }}>{t.comingNext}</span>
+              <span style={{ display: "block", width: 1, height: "clamp(34px,6vh,62px)", background: "linear-gradient(to bottom, rgba(198,162,88,0.55), rgba(198,162,88,0))", margin: "clamp(26px,4.5vh,44px) auto" }} />
+
+              {c.tagline && (
+                <p style={{ fontFamily: SERIF, fontWeight: 300, fontStyle: "italic", fontSize: "clamp(16px,1.5vw,22px)", color: BODY, lineHeight: 1.75, maxWidth: 620, margin: "0 auto", textShadow: "0 2px 18px rgba(0,0,0,0.6)" }}>
+                  {localized(c.tagline, lang)}
+                </p>
+              )}
+
+              <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", background: "rgba(6,8,15,0.35)", padding: "13px 38px", marginTop: "clamp(30px,5vh,48px)" }}>
+                <span style={{ fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", color: GOLD }}>{t.comingNext}</span>
+              </div>
             </div>
           </div>
         </section>
@@ -84,7 +104,7 @@ export default function EventsIndex({
 
       {/* ============ PREVIOUS CHAPTERS ============ */}
       {past.length > 0 && (
-        <section>
+        <section style={{ padding: "0 clamp(28px,6vw,80px)" }}>
           <Divider label={t.previous} />
 
           <div style={{ maxWidth: 1240, margin: "clamp(44px,7vh,86px) auto 0" }}>
