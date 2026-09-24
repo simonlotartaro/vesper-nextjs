@@ -26,7 +26,7 @@ export type EventsIndexCopy = {
 const Divider = ({ label }: { label: string }) => (
   <div style={{ display: "flex", alignItems: "center", gap: 24, maxWidth: 1240, margin: "0 auto" }}>
     <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
-    <span style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: GOLD, whiteSpace: "nowrap" }}>{label}</span>
+    <span style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: GOLD, whiteSpace: "nowrap", textShadow: "0 2px 12px rgba(6,8,15,0.9)" }}>{label}</span>
     <span style={{ flex: 1, height: 1, background: "rgba(198,162,88,0.28)" }} />
   </div>
 );
@@ -62,9 +62,10 @@ export default function EventsIndex({
               Daylight needs a heavier hand than the Madrid night shot did. */}
           {c.heroImage && (
             <>
-              <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${c.heroImage}')`, backgroundSize: "cover", backgroundPosition: "center center", filter: "grayscale(0.35) saturate(0.75) brightness(0.62)", zIndex: 0 }} />
-              <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.7)", zIndex: 1 }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.92) 0%, rgba(6,8,15,0.55) 30%, rgba(6,8,15,0.72) 70%, #06080F 100%)", zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${c.heroImage}')`, backgroundSize: "cover", backgroundPosition: "center center", filter: "grayscale(0.15) saturate(0.9) brightness(0.95)", zIndex: 0 }} />
+              <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.42)", zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.8) 0%, rgba(6,8,15,0.2) 32%, rgba(6,8,15,0.5) 72%, #06080F 100%)", zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 62% at 50% 45%, rgba(6,8,15,0.66) 0%, rgba(6,8,15,0.34) 55%, rgba(6,8,15,0) 82%)", zIndex: 1 }} />
             </>
           )}
 
@@ -72,7 +73,7 @@ export default function EventsIndex({
             <Divider label={t.upNext} />
 
             <div style={{ textAlign: "center", marginTop: "clamp(46px,8vh,96px)" }}>
-              <div style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: GOLD, marginBottom: "clamp(20px,3.5vh,32px)" }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.44em", textTransform: "uppercase", color: GOLD, marginBottom: "clamp(20px,3.5vh,32px)", textShadow: "0 2px 12px rgba(6,8,15,0.9)" }}>
                 {c.chapter}
               </div>
 
@@ -81,7 +82,7 @@ export default function EventsIndex({
               </h2>
 
               {c.sport && (
-                <div style={{ fontSize: isMobile ? 11 : 12, letterSpacing: "0.52em", textTransform: "uppercase", color: IVORY, marginTop: "clamp(18px,3vh,30px)", paddingLeft: "0.52em" }}>
+                <div style={{ fontSize: isMobile ? 11 : 12, letterSpacing: "0.52em", textTransform: "uppercase", color: IVORY, marginTop: "clamp(18px,3vh,30px)", paddingLeft: "0.52em", textShadow: "0 2px 14px rgba(6,8,15,0.9)" }}>
                   {localized(c.sport, lang)}
                 </div>
               )}
@@ -95,7 +96,7 @@ export default function EventsIndex({
               )}
 
               <div style={{ display: "inline-block", border: "1px solid rgba(198,162,88,0.35)", background: "rgba(6,8,15,0.35)", padding: "13px 38px", marginTop: "clamp(30px,5vh,48px)" }}>
-                <span style={{ fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", color: GOLD }}>{t.comingNext}</span>
+                <span style={{ fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", color: GOLD, textShadow: "0 2px 12px rgba(6,8,15,0.9)" }}>{t.comingNext}</span>
               </div>
             </div>
           </div>
