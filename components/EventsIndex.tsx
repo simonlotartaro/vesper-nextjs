@@ -62,10 +62,10 @@ export default function EventsIndex({
               Daylight needs a heavier hand than the Madrid night shot did. */}
           {c.heroImage && (
             <>
-              <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${c.heroImage}')`, backgroundSize: "cover", backgroundPosition: "center center", filter: "grayscale(0.15) saturate(0.9) brightness(0.95)", zIndex: 0 }} />
-              <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.42)", zIndex: 1 }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.8) 0%, rgba(6,8,15,0.2) 32%, rgba(6,8,15,0.5) 72%, #06080F 100%)", zIndex: 1 }} />
-              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 62% at 50% 45%, rgba(6,8,15,0.66) 0%, rgba(6,8,15,0.34) 55%, rgba(6,8,15,0) 82%)", zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${c.heroImage}')`, backgroundSize: "cover", backgroundPosition: "center center", filter: "grayscale(0.06) saturate(1) brightness(1.14)", zIndex: 0 }} />
+              <div style={{ position: "absolute", inset: 0, background: "rgba(6,8,15,0.26)", zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,8,15,0.72) 0%, rgba(6,8,15,0.08) 34%, rgba(6,8,15,0.42) 74%, #06080F 100%)", zIndex: 1 }} />
+              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 72% 64% at 50% 45%, rgba(6,8,15,0.7) 0%, rgba(6,8,15,0.36) 55%, rgba(6,8,15,0) 82%)", zIndex: 1 }} />
             </>
           )}
 
